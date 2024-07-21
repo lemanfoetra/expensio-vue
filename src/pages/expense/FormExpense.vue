@@ -26,7 +26,10 @@
                 </div>
             </div>
             <div class="modal-footer text-center">
-                <button id="btn-close-modal" type="button" class="btn btn-danger" data-bs-dismiss="modal">Batal</button>
+                <button id="btn-close-modal" type="button" style="display: none;" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal" :disabled="loadingPost">
+                    Batal
+                </button>
                 <button v-if="!loadingPost" type="submit" class="btn btn-primary" @click="save">Simpan</button>
                 <button v-else type="button" class="disabled btn btn-primary">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"

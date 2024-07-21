@@ -1,17 +1,19 @@
 <template>
     <div class="col-md-12 list-expense">
-        <div class="row widht_100">
-            <div class="col-1 width_100px">
-                <div class="box-checkbox-centered">
-                    <input type="checkbox" v-model="isChecked" class="form-check-input">
-                </div>
-            </div>
-            <div class="col" @click="clickToDetail">
-                <div class="card">
-                    <div class="my-card-body">
-                        <div class="tanggal">{{ vdate }}</div>
-                        <div class="nominal">Rp {{ vnominal }}</div>
-                        <div class="keterangan">{{ vketerangan }}</div>
+        <div class="card">
+            <div class="my-card-body">
+                <div class="row">
+                    <div class="col control-checkbox" v-if="statusOpenOption">
+                        <div class="box-checkbox-centered">
+                            <input type="checkbox" v-model="isChecked" class="form-check-input">
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="content" @click="clickToDetail">
+                            <div class="tanggal">{{ vdate }}</div>
+                            <div class="nominal">Rp {{ vnominal }} {{ statusOpenOption }}</div>
+                            <div class="keterangan">{{ vketerangan }}</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -26,7 +28,7 @@ import { ref, watch, defineProps, defineEmits, defineModel } from 'vue';
 const props = defineProps(['showOption', 'id', 'tanggal', 'nominal', 'keterangan']);
 const emit = defineEmits(['clickDetail', 'onCheckboxClick']);
 
-let statusOpenOption = ref(false);
+let statusOpenOption = ref(props.showOption);
 const idExpense = ref(props.id);
 const vdate = ref(formatTanggal(props.tanggal))
 const vnominal = ref(props.nominal)
@@ -75,11 +77,16 @@ function formatTanggal(tanggalString) {
     margin-top: 8px !important;
 }
 
+.control-checkbox {
+    max-width: 50px !important;
+    text-align: center !important;
+}
+
 .box-checkbox-centered {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 90px;
+    height: 60px;
 }
 
 .widht_100 {

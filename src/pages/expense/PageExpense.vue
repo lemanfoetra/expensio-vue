@@ -13,59 +13,6 @@
                         <!-- Page title actions -->
                         <div class="col-auto ms-auto d-print-none">
                             <div class="btn-list">
-                                <button v-if="showButtonDelete" @click="deleteMultipleExpense" type="button"
-                                    class="btn btn-danger d-none d-sm-inline-block">
-                                    <svg v-if="!loadingDetele" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                        stroke-linecap="round" stroke-linejoin="round"
-                                        class="icon icon-tabler icons-tabler-outline icon-tabler-x">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                        <path d="M18 6l-12 12" />
-                                        <path d="M6 6l12 12" />
-                                    </svg>
-                                    <svg v-else xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                        stroke-linecap="round" stroke-linejoin="round"
-                                        class="icon icon-tabler icons-tabler-outline icon-tabler-loader">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                        <path d="M12 6l0 -3" />
-                                        <path d="M16.25 7.75l2.15 -2.15" />
-                                        <path d="M18 12l3 0" />
-                                        <path d="M16.25 16.25l2.15 2.15" />
-                                        <path d="M12 18l0 3" />
-                                        <path d="M7.75 16.25l-2.15 2.15" />
-                                        <path d="M6 12l-3 0" />
-                                        <path d="M7.75 7.75l-2.15 -2.15" />
-                                    </svg>
-                                    Hapus
-                                </button>
-                                <button v-if="showButtonDelete" @click="deleteMultipleExpense" type="button"
-                                    class="btn btn-danger d-sm-none btn-icon">
-                                    <svg v-if="!loadingDetele" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                        stroke-linecap="round" stroke-linejoin="round"
-                                        class="icon icon-tabler icons-tabler-outline icon-tabler-x">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                        <path d="M18 6l-12 12" />
-                                        <path d="M6 6l12 12" />
-                                    </svg>
-                                    <svg v-else xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                        stroke-linecap="round" stroke-linejoin="round"
-                                        class="icon icon-tabler icons-tabler-outline icon-tabler-loader">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                        <path d="M12 6l0 -3" />
-                                        <path d="M16.25 7.75l2.15 -2.15" />
-                                        <path d="M18 12l3 0" />
-                                        <path d="M16.25 16.25l2.15 2.15" />
-                                        <path d="M12 18l0 3" />
-                                        <path d="M7.75 16.25l-2.15 2.15" />
-                                        <path d="M6 12l-3 0" />
-                                        <path d="M7.75 7.75l-2.15 -2.15" />
-                                    </svg>
-                                </button>
-
-
                                 <button type="button" style="display: none;" id="buton_open_modal"
                                     data-bs-toggle="modal" data-bs-target="#modal-simple"></button>
                                 <button @click="addForm" type="button" class="btn btn-primary d-none d-sm-inline-block"
@@ -103,11 +50,33 @@
             <div class="container-xl">
                 <div class="row row-deck row-cards">
                     <div class="col-md-12">
+                        <div class="card">
+                            <div class="content-filter">
+                                <div class="row">
+                                    <div class="col control-checkbox">
+                                        <input type="checkbox" @change="changeOption" v-model="checkShowOption"
+                                            class="form-check-input" style="margin-top: 2px; margin-bottom: 2px"
+                                            :disabled="showButtonDelete">
+                                    </div>
+                                    <div class="col">
+                                        <button v-if="showButtonDelete" @click="deleteMultipleExpense" type="button"
+                                            class="btn btn-outline-danger btn-sm" :disabled="loadingDetele">
+                                            <span v-if="!loadingDetele">Hapus Expense</span>
+                                            <span v-else>
+                                                Menghapus ...
+                                            </span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
                         <loading v-model:active="loadingExpeses" :is-full-page="true" />
                     </div>
                     <list-expense v-for="expense in expenses" :key="expense.key" :id="expense.id"
                         :tanggal="expense.date" :nominal="expense.nominal" :keterangan="expense.deskripsi"
-                        @click-detail="editForm" @on-checkbox-click="onCheckboxClick">
+                        @click-detail="editForm" @on-checkbox-click="onCheckboxClick" :show-option="showOption">
                     </list-expense>
                 </div>
             </div>
@@ -122,7 +91,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, defineModel } from 'vue';
 import { useStore } from 'vuex'
 import { loadExpense, deleteExpense } from '../../hooks/crud_expense'
 // import { useRouter } from 'vue-router'
@@ -141,6 +110,26 @@ let idExpense = ref(0);
 let loadingExpeses = ref(false);
 let loadingDetele = ref(false);
 let listIdExpense = ref([]);
+const checkShowOption = defineModel('showOption');
+
+
+const expenses = computed(function () {
+    const datas = store.getters.expenses;
+    return datas;
+});
+
+
+const showButtonDelete = computed(function () {
+    if (listIdExpense.value.length > 0) {
+        return true;
+    }
+    return false;
+});
+
+
+const showOption = computed(function () {
+    return checkShowOption.value;
+});
 
 
 onMounted(async () => {
@@ -169,18 +158,12 @@ onMounted(async () => {
 })
 
 
-const expenses = computed(function () {
-    const datas = store.getters.expenses;
-    return datas;
-});
-
-
-const showButtonDelete = computed(function () {
-    if (listIdExpense.value.length > 0) {
-        return true;
+function changeOption() {
+    if (checkShowOption.value && listIdExpense.value > 0) {
+        listIdExpense.value = [];
     }
-    return false;
-});
+}
+
 
 function addForm() {
     idExpense.value = 0;
@@ -228,3 +211,14 @@ function onCheckboxClick(value) {
     }
 }
 </script>
+
+<style scoped>
+.content-filter {
+    padding: 10px
+}
+
+.control-checkbox {
+    max-width: 50px !important;
+    text-align: center !important;
+}
+</style>
