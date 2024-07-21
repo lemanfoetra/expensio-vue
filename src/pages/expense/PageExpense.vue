@@ -13,26 +13,55 @@
                         <!-- Page title actions -->
                         <div class="col-auto ms-auto d-print-none">
                             <div class="btn-list">
-                                <button v-if="showButtonDelete" @click="deleteExpense" type="button"
+                                <button v-if="showButtonDelete" @click="deleteMultipleExpense" type="button"
                                     class="btn btn-danger d-none d-sm-inline-block">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round"
+                                    <svg v-if="!loadingDetele" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round"
                                         class="icon icon-tabler icons-tabler-outline icon-tabler-x">
                                         <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                                         <path d="M18 6l-12 12" />
                                         <path d="M6 6l12 12" />
                                     </svg>
-                                    Hapus</button>
-                                <button v-if="showButtonDelete" @click="deleteExpense" type="button"
+                                    <svg v-else xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round"
+                                        class="icon icon-tabler icons-tabler-outline icon-tabler-loader">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                        <path d="M12 6l0 -3" />
+                                        <path d="M16.25 7.75l2.15 -2.15" />
+                                        <path d="M18 12l3 0" />
+                                        <path d="M16.25 16.25l2.15 2.15" />
+                                        <path d="M12 18l0 3" />
+                                        <path d="M7.75 16.25l-2.15 2.15" />
+                                        <path d="M6 12l-3 0" />
+                                        <path d="M7.75 7.75l-2.15 -2.15" />
+                                    </svg>
+                                    Hapus
+                                </button>
+                                <button v-if="showButtonDelete" @click="deleteMultipleExpense" type="button"
                                     class="btn btn-danger d-sm-none btn-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round"
+                                    <svg v-if="!loadingDetele" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round"
                                         class="icon icon-tabler icons-tabler-outline icon-tabler-x">
                                         <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                                         <path d="M18 6l-12 12" />
                                         <path d="M6 6l12 12" />
+                                    </svg>
+                                    <svg v-else xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round"
+                                        class="icon icon-tabler icons-tabler-outline icon-tabler-loader">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                        <path d="M12 6l0 -3" />
+                                        <path d="M16.25 7.75l2.15 -2.15" />
+                                        <path d="M18 12l3 0" />
+                                        <path d="M16.25 16.25l2.15 2.15" />
+                                        <path d="M12 18l0 3" />
+                                        <path d="M7.75 16.25l-2.15 2.15" />
+                                        <path d="M6 12l-3 0" />
+                                        <path d="M7.75 7.75l-2.15 -2.15" />
                                     </svg>
                                 </button>
 
@@ -95,6 +124,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { useStore } from 'vuex'
+import { loadExpense, deleteExpense } from '../../hooks/crud_expense'
 // import { useRouter } from 'vue-router'
 
 // directive
@@ -109,27 +139,15 @@ import Loading from 'vue-loading-overlay';
 const store = useStore();
 let idExpense = ref(0);
 let loadingExpeses = ref(false);
+let loadingDetele = ref(false);
 let listIdExpense = ref([]);
 
 
 onMounted(async () => {
     loadingExpeses.value = true;
-
     try {
         const token = store.getters.getToken;
-        const url = 'http://expense.ardynsulaeman.cloud/api/expense';
-        const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-        });
-        if (!response.ok) {
-            throw new Error("Gagal memuat data.");
-        }
-        const result = await response.json();
+        const result = await loadExpense(token);
 
         if (!result.success === true) {
             throw new Error("Gagal memuat data.");
@@ -173,22 +191,13 @@ function editForm(data) {
     document.getElementById('buton_open_modal').click();
 }
 
-async function deleteExpense() {
+async function deleteMultipleExpense() {
+    loadingDetele.value = true;
     try {
         if (listIdExpense.value.length > 0) {
             for await (const id of listIdExpense.value) {
-                const url = `http://expense.ardynsulaeman.cloud/api/expense/${id}`;
-                const response = await fetch(url, {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${store.getters.getToken}`
-                    }
-                });
-                if (!response.ok) {
-                    throw new Error("Hapus data gagal.");
-                }
-                const result = await response.json();
+                const result = await deleteExpense(store.getters.getToken, id);
+                // const result = await response.json();
                 if (result.success !== true) {
                     throw new Error('Hapus data gagal.')
                 }
@@ -197,7 +206,9 @@ async function deleteExpense() {
             store.dispatch('deleteExpense', listIdExpense.value);
             listIdExpense.value = [];
         }
+        loadingDetele.value = false;
     } catch (error) {
+        loadingDetele.value = false;
         alert(error.message);
     }
 }

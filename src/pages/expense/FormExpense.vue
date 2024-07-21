@@ -51,6 +51,7 @@
 <script setup>
 import { ref, watch, defineModel, defineEmits, defineProps } from 'vue';
 import { useStore } from 'vuex'
+import { insertExpense, updateExpense } from '../../hooks/crud_expense'
 
 import Loading from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/css/index.css';
@@ -94,6 +95,8 @@ function loadExistingExpanse(id) {
 async function submitForm() {
     loadingPost.value = true;
     try {
+
+        // Validasi From
         validForm.value = true;
         if (date.value === '' || nominal.value === '' || deskripsi.value === '') {
             validForm.value = false;
@@ -103,67 +106,39 @@ async function submitForm() {
             return;
         }
 
-        const data = {
+        // Initiate data
+        const dataPost = {
             date: date.value,
             nominal: nominal.value,
             deskripsi: deskripsi.value
         }
 
+        // Action on submit
         if (idExpense.value) {
             // Edit Expanse
-            const url = `http://expense.ardynsulaeman.cloud/api/expense/${idExpense.value}`;
-            const dataPost = {
-                date: data.date,
-                nominal: data.nominal,
-                deskripsi: data.deskripsi,
-            };
-            const response = await fetch(url, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${store.getters.getToken}`
-                },
-                body: JSON.stringify(dataPost)
-            });
-            if (!response.ok) {
-                throw new Error("Edit data gagal.");
-            }
-            const result = await response.json();
+            const result = await updateExpense(store.getters.getToken, idExpense.value, dataPost);
             if (result.success !== true) {
                 throw new Error('Edit data gagal.')
             }
-            data.id = idExpense.value;
+            dataPost.id = idExpense.value;
             store.dispatch('editExpense', {
                 'id': idExpense.value,
-                'data': data,
+                'data': dataPost,
             });
         } else {
-            // Add Expanse
-            const url = 'http://expense.ardynsulaeman.cloud/api/expense';
-            const dataPost = {
-                date: data.date,
-                nominal: data.nominal,
-                deskripsi: data.deskripsi,
-            };
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'Authorization': `Bearer ${store.getters.getToken}`
-                },
-                body: JSON.stringify(dataPost)
-            });
-            if (!response.ok) {
-                throw new Error("Tambah data gagal.");
+            // Add Expense to server
+            const result = await insertExpense(
+                store.getters.getToken,
+                dataPost
+            );
+            if (result.success !== true) {
+                throw new Error('Tambah data gagal');
             }
-            const result = await response.json();
-            if (result.success === true) {
-                data.id = result.data.id;
-                store.dispatch('addExpense', data);
-            }
+            dataPost.id = result.data.id;
+            store.dispatch('addExpense', dataPost);
         }
 
+        // Reset data when submit success
         date.value = '';
         nominal.value = '';
         deskripsi.value = '';
@@ -172,7 +147,7 @@ async function submitForm() {
         // CLOSE modal
         loadingPost.value = false;
         document.getElementById('btn-close-modal').click();
-        emit('submit', data);
+        emit('submit', dataPost);
 
     } catch (error) {
         loadingPost.value = false;
