@@ -6,9 +6,9 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <h1 class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
-                    <a href=".">
-                        <img src="/static/logo.svg" width="110" height="32" alt="Tabler" class="navbar-brand-image">
-                    </a>
+                    <div>
+                        <span>Expensive</span>
+                    </div>
                 </h1>
                 <div class="navbar-nav flex-row order-md-last">
                     <div class="nav-item dropdown">
@@ -17,14 +17,16 @@
                             <span class="avatar avatar-sm"
                                 style="background-image: url(./static/avatars/000m.jpg)"></span>
                             <div class="d-none d-xl-block ps-2">
-                                <div>John Doe</div>
-                                <div class="mt-1 small text-muted">UI Designer</div>
+                                <div>{{ user.name }}</div>
+                                <div class="mt-1 small text-muted">
+                                    {{ user.email }}
+                                </div>
                             </div>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                            <a href="#" class="dropdown-item">Settings</a>
+                            <!-- <a href="#" class="dropdown-item">Settings</a>
                             <a href="#" class="dropdown-item">Profile</a>
-                            <div class="dropdown-divider"></div>
+                            <div class="dropdown-divider"></div> -->
                             <button type="button" @click="logout" class="dropdown-item">Logout</button>
                         </div>
                     </div>
@@ -91,7 +93,7 @@
 </template>
 
 <script>
-import { ref, watch } from 'vue';
+import { ref, watch, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
@@ -111,6 +113,12 @@ export default {
             }
         )
 
+        const user = computed(function () {
+            const us = store.getters.getUser;
+            return us.user;
+        });
+
+
         function classActive(reuteName) {
             if (routeOpened.value === reuteName) {
                 return "nav-item active";
@@ -125,7 +133,9 @@ export default {
 
         return {
             classActive,
-            logout
+            logout,
+
+            user
         }
     }
 }

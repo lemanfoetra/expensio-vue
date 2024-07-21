@@ -8,7 +8,7 @@ const store = createStore({
         return {
             expense: [],
             token: '',
-            user: null,
+            user: '',
         }
     },
     mutations: mutations,

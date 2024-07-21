@@ -48,22 +48,47 @@
 
         <div class="page-body">
             <div class="container-xl">
-                <div class="row row-deck row-cards">
+                <div class="row">
                     <div class="col-md-12">
                         <div class="card">
                             <div class="content-filter">
                                 <div class="row">
                                     <div class="col control-checkbox">
                                         <input type="checkbox" @change="changeOption" v-model="checkShowOption"
-                                            class="form-check-input" style="margin-top: 2px; margin-bottom: 2px"
+                                            class="form-check-input" style="margin-top: 6px; margin-bottom: 6px"
                                             :disabled="showButtonDelete">
                                     </div>
                                     <div class="col">
                                         <button v-if="showButtonDelete" @click="deleteMultipleExpense" type="button"
-                                            class="btn btn-outline-danger btn-sm" :disabled="loadingDetele">
-                                            <span v-if="!loadingDetele">Hapus Expense</span>
+                                            class="action-button-delete btn-sm" :disabled="loadingDetele">
+                                            <span v-if="!loadingDetele">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                    class="icon icon-tabler icons-tabler-outline icon-tabler-trash">
+                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                    <path d="M4 7l16 0" />
+                                                    <path d="M10 11l0 6" />
+                                                    <path d="M14 11l0 6" />
+                                                    <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
+                                                    <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+                                                </svg>
+                                            </span>
                                             <span v-else>
-                                                Menghapus ...
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                    class="icon icon-tabler icons-tabler-outline icon-tabler-loader">
+                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                    <path d="M12 6l0 -3" />
+                                                    <path d="M16.25 7.75l2.15 -2.15" />
+                                                    <path d="M18 12l3 0" />
+                                                    <path d="M16.25 16.25l2.15 2.15" />
+                                                    <path d="M12 18l0 3" />
+                                                    <path d="M7.75 16.25l-2.15 2.15" />
+                                                    <path d="M6 12l-3 0" />
+                                                    <path d="M7.75 7.75l-2.15 -2.15" />
+                                                </svg>
                                             </span>
                                         </button>
                                     </div>
@@ -71,13 +96,40 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-12">
-                        <loading v-model:active="loadingExpeses" :is-full-page="true" />
+                    <div v-if="loadingExpeses" class="col-md-12">
+                        <div class="card mt-2">
+                            <div style="padding: 10px; text-align: center;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    class="icon icon-tabler icons-tabler-outline icon-tabler-loader">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                    <path d="M12 6l0 -3" />
+                                    <path d="M16.25 7.75l2.15 -2.15" />
+                                    <path d="M18 12l3 0" />
+                                    <path d="M16.25 16.25l2.15 2.15" />
+                                    <path d="M12 18l0 3" />
+                                    <path d="M7.75 16.25l-2.15 2.15" />
+                                    <path d="M6 12l-3 0" />
+                                    <path d="M7.75 7.75l-2.15 -2.15" />
+                                </svg>
+                                Memuat ...
+                            </div>
+                        </div>
                     </div>
-                    <list-expense v-for="expense in expenses" :key="expense.key" :id="expense.id"
-                        :tanggal="expense.date" :nominal="expense.nominal" :keterangan="expense.deskripsi"
-                        @click-detail="editForm" @on-checkbox-click="onCheckboxClick" :show-option="showOption">
-                    </list-expense>
+                    <div v-else-if="!loadingExpeses && expenses.length == 0">
+                        <div class="card mt-2">
+                            <div style="padding: 10px; text-align: center;">
+                                Tidak ada data
+                            </div>
+                        </div>
+                    </div>
+                    <div v-else>
+                        <list-expense v-for="expense in expenses" :key="expense.key" :id="expense.id"
+                            :tanggal="expense.date" :nominal="expense.nominal" :keterangan="expense.deskripsi"
+                            @click-detail="editForm" @on-checkbox-click="onCheckboxClick" :show-option="showOption">
+                        </list-expense>
+                    </div>
                 </div>
             </div>
         </div>
@@ -102,7 +154,7 @@ import { loadExpense, deleteExpense } from '../../hooks/crud_expense'
 // component
 import ListExpense from './ListExpense.vue';
 import FormExpense from './FormExpense.vue';
-import Loading from 'vue-loading-overlay';
+// import Loading from 'vue-loading-overlay';
 
 // const router = useRouter();
 const store = useStore();
@@ -214,11 +266,24 @@ function onCheckboxClick(value) {
 
 <style scoped>
 .content-filter {
-    padding: 10px
+    padding: 10px;
+    margin-bottom: 0px !important;
 }
 
 .control-checkbox {
     max-width: 50px !important;
     text-align: center !important;
+}
+
+.action-button-delete {
+    border: 1px solid rgb(220, 78, 65);
+    background-color: transparent;
+    color: rgb(220, 78, 65);
+    padding: 5px 8px 5px 8px;
+    border-radius: 3px;
+}
+
+.action-button-delete:hover {
+    background-color: antiquewhite;
 }
 </style>

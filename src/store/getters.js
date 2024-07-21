@@ -15,9 +15,10 @@ export default {
 
     getUser(state) {
         let user = state.user;
-        if (user) {
+        if (user === '') {
             user = JSON.parse(localStorage.getItem('user'));
         }
+        console.log('user', user)
         return user;
     },
     getToken(state) {

@@ -11,7 +11,7 @@
                     <div class="col">
                         <div class="content" @click="clickToDetail">
                             <div class="tanggal">{{ vdate }}</div>
-                            <div class="nominal">Rp {{ vnominal }} {{ statusOpenOption }}</div>
+                            <div class="nominal">Rp {{ vnominal }}</div>
                             <div class="keterangan">{{ vketerangan }}</div>
                         </div>
                     </div>
@@ -31,7 +31,7 @@ const emit = defineEmits(['clickDetail', 'onCheckboxClick']);
 let statusOpenOption = ref(props.showOption);
 const idExpense = ref(props.id);
 const vdate = ref(formatTanggal(props.tanggal))
-const vnominal = ref(props.nominal)
+const vnominal = ref(formatCurrency(props.nominal))
 const vketerangan = ref(props.keterangan)
 const isChecked = defineModel('isChecked');
 
@@ -53,22 +53,26 @@ function clickToDetail() {
 
 
 function formatTanggal(tanggalString) {
-    // Buat objek Date dari string input
+    // Mengubah string menjadi objek Date
     const tanggal = new Date(tanggalString);
 
-    // Array nama hari
-    const namaHari = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+    // Menentukan hari dalam bahasa Indonesia
+    const hari = tanggal.toLocaleDateString('id-ID', { weekday: 'long' });
 
-    // Dapatkan nama hari
-    const hari = namaHari[tanggal.getDay()];
+    // Menentukan tanggal, bulan, dan tahun dalam bahasa Indonesia
+    const tanggalFormatted = tanggal.toLocaleDateString('id-ID', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+    });
 
-    // Dapatkan tanggal, bulan, dan tahun
-    const dd = String(tanggal.getDate()).padStart(2, '0');
-    const mm = String(tanggal.getMonth() + 1).padStart(2, '0'); // Januari adalah 0!
-    const yyyy = tanggal.getFullYear();
+    // Menggabungkan hari dan tanggal yang sudah diformat
+    return `${hari}, ${tanggalFormatted}`;
+}
 
-    // Gabungkan dalam format yang diinginkan
-    return `${hari}, ${dd}-${mm}-${yyyy}`;
+function formatCurrency(nilai) {
+    const formatter = new Intl.NumberFormat('id-ID');
+    return formatter.format(nilai);
 }
 </script>
 

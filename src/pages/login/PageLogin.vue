@@ -2,7 +2,7 @@
     <div class="page page-center">
         <div class="container container-tight py-4">
             <div class="text-center mb-4">
-                <h4>Ardyn Sulaeman Expense</h4>
+                <h4>Expensive</h4>
             </div>
 
             <div v-if="!validForm" class="alert alert-danger" role="alert">
@@ -21,14 +21,16 @@
                         <div class="mb-2">
                             <label class="form-label">
                                 Password
-                                <span class="form-label-description">
+                                <!-- <span class="form-label-description">
                                     <a href="#">I forgot password</a>
-                                </span>
+                                </span> -->
                             </label>
                             <div class="input-group input-group-flat">
-                                <input type="password" class="form-control" v-model="password" autocomplete="off">
+                                <input id="password" type="password" class="form-control" v-model="password"
+                                    autocomplete="off">
                                 <span class="input-group-text">
-                                    <a href="#" class="link-secondary" title="Show password"
+                                    <a href="#" @click="showPassword" type="button" class="link-secondary"
+                                        title="Show password"
                                         data-bs-toggle="tooltip"><!-- Download SVG icon from http://tabler-icons.io/i/eye -->
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -70,10 +72,10 @@
                     </form>
                 </div>
             </div>
-            <div class="text-center text-secondary mt-3">
+            <!-- <div class="text-center text-secondary mt-3">
                 Don't have account yet?
                 <router-link to="/home">Go to expense</router-link>
-            </div>
+            </div> -->
         </div>
     </div>
 </template>
@@ -91,6 +93,7 @@ const password = defineModel('password');
 const validForm = ref(true);
 const errorLogin = ref('');
 const loadingLogin = ref(false);
+const showInputPassword = ref(false);
 
 watch([email, password], () => {
     validForm.value = true;
@@ -109,7 +112,7 @@ async function sumbitLogin() {
             throw new Error("Mohon isi semua inputan.");
         }
 
-        const url = 'http://expense.ardynsulaeman.cloud/api/login'; // Ganti dengan URL endpoint API login Anda
+        const url = 'http://expense.ardynsulaeman.cloud/api/login';
         const data = {
             email: email.value,
             password: password.value
@@ -130,17 +133,22 @@ async function sumbitLogin() {
             }
         }
         const result = await response.json();
+        if (!result.access_token) {
+            throw new Error("Login gagal silahkan coba kembali.");
+        }
 
         // SIMPAN KE LOCAL STOAGE
-        localStorage.setItem('access_token', result.access_token);
-        localStorage.setItem('user', JSON.stringify(result));
-        store.dispatch('setToken', result.access_token);
-        store.dispatch('setUser', result);
+        if (response.status === 200) {
+            localStorage.setItem('access_token', result.access_token);
+            localStorage.setItem('user', JSON.stringify(result));
+            store.dispatch('setToken', result.access_token);
+            store.dispatch('setUser', result);
 
-        loadingLogin.value = false;
-        const token = localStorage.getItem('access_token');
-        if ((token || null) !== null) {
-            router.push('/home');
+            loadingLogin.value = false;
+            const token = localStorage.getItem('access_token');
+            if ((token || null) !== null) {
+                router.push('/home');
+            }
         }
         throw new Error('Login gagal silahkan coba kembali.');
 
@@ -148,6 +156,16 @@ async function sumbitLogin() {
         validForm.value = false;
         errorLogin.value = er.message;
         loadingLogin.value = false;
+    }
+}
+
+function showPassword() {
+    const passwordField = document.getElementById('password');
+    showInputPassword.value = !showInputPassword.value;
+    if (showInputPassword.value) {
+        passwordField.type = 'text';
+    } else {
+        passwordField.type = 'password';
     }
 }
 </script>
