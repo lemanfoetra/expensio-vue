@@ -5,6 +5,7 @@ import HeaderNav from './components/layout/HeaderNav.vue'
 import PageLogin from './pages/login/PageLogin.vue'
 import PageExpense from './pages/expense/PageExpense.vue'
 import PageHome from './pages/home/PageHome.vue'
+import PagePlanning from './pages/planning/PagePlanning.vue'
 
 const routes = [
     {
@@ -20,6 +21,17 @@ const routes = [
             {
                 path: '',
                 component: PageHome,
+            },
+        ],
+    },
+    {
+        path: '/planning',
+        meta: { requireAuth: true },
+        component: HeaderNav,
+        children: [
+            {
+                path: '',
+                component: PagePlanning,
             },
         ],
     },
