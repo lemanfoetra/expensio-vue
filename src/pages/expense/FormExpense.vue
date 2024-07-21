@@ -25,7 +25,7 @@
                     </div>
                 </div>
             </div>
-            <div class="modal-footer" style="text-align: center;">
+            <div class="modal-footer text-center">
                 <button id="btn-close-modal" type="button" class="btn btn-danger" data-bs-dismiss="modal">Batal</button>
                 <button v-if="!loadingPost" type="submit" class="btn btn-primary" @click="save">Simpan</button>
                 <button v-else type="button" class="disabled btn btn-primary">
@@ -42,6 +42,7 @@
                         <path d="M6 12l-3 0" />
                         <path d="M7.75 7.75l-2.15 -2.15" />
                     </svg>
+                    Simpan
                 </button>
             </div>
         </div>
@@ -60,7 +61,6 @@ const store = useStore();
 const emit = defineEmits(['submit']);
 const props = defineProps(['idExpense']);
 
-const validForm = ref(true);
 const date = defineModel('date');
 const nominal = defineModel('nominal');
 const deskripsi = defineModel('deskripsi');
@@ -120,13 +120,8 @@ async function submitForm() {
     try {
 
         // Validasi From
-        validForm.value = true;
-        if (date.value === '' || nominal.value === '' || deskripsi.value === '') {
-            validForm.value = false;
-        }
-        if (!validForm.value) {
-            alert('Mohon isi semua bidang isian');
-            return;
+        if ((date.value || '') === '' || (nominal.value || '') === '' || (deskripsi.value || '') === '') {
+            throw new Error('Mohon isi semua bidang isian');
         }
 
         // Initiate data
@@ -183,5 +178,11 @@ async function submitForm() {
 .box-loading {
     padding-top: 40px;
     padding-bottom: 40px;
+}
+
+.modal-footer {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
 }
 </style>
