@@ -51,7 +51,7 @@
 <script setup>
 import { ref, watch, defineModel, defineEmits, defineProps } from 'vue';
 import { useStore } from 'vuex'
-import { insertExpense, updateExpense } from '../../hooks/crud_expense'
+import { insertExpense, updateExpense, showExpense } from '../../hooks/crud_expense'
 
 import Loading from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/css/index.css';
@@ -80,15 +80,38 @@ watch(() => props.idExpense, (newValue) => {
     }
 });
 
-
-function loadExistingExpanse(id) {
+/**
+ * load existing expense from server
+ */
+async function loadExistingExpanse(id) {
     statusMemuat.value = true;
-    const expense = store.getters.expenseById(id);
-    date.value = expense.date;
-    nominal.value = expense.nominal;
-    deskripsi.value = expense.deskripsi;
-    statusMemuat.value = false;
+    try {
+        const result = await showExpense(store.getters.getToken, id);
 
+        if (result.success !== true) {
+            throw new Error(result.message);
+        }
+
+        date.value = result.data.date;
+        nominal.value = result.data.nominal;
+        deskripsi.value = result.data.deskripsi;
+
+        const newData = {
+            id: result.data.id,
+            date: result.data.date,
+            nominal: result.data.nominal,
+            deskripsi: result.data.deskripsi,
+        }
+        store.dispatch('editExpense', {
+            'id': idExpense.value,
+            'data': newData,
+        });
+
+        statusMemuat.value = false;
+    } catch (error) {
+        alert(error.message);
+        statusMemuat.value = false;
+    }
 }
 
 

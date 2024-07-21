@@ -73,7 +73,12 @@ export async function updateExpense(token, idExpense, data) {
     return await response.json();
 }
 
-
+/**
+ * Delete Expense by Id
+ * @param {string} token 
+ * @param {number} idExpense 
+ * @returns 
+ */
 export async function deleteExpense(token, idExpense) {
     const url = `http://expense.ardynsulaeman.cloud/api/expense/${idExpense}`;
     const response = await fetch(url, {
@@ -85,6 +90,28 @@ export async function deleteExpense(token, idExpense) {
     });
     if (!response.ok) {
         throw new Error("Hapus data gagal.");
+    }
+    return await response.json();
+}
+
+/**
+ * Show Expense by Id
+ * @param {string} token 
+ * @param {number} idExpense 
+ * @returns 
+ */
+export async function showExpense(token, idExpense) {
+    const url = 'http://expense.ardynsulaeman.cloud/api/expense/' + idExpense;
+    const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+    });
+    if (!response.ok) {
+        throw new Error("Gagal memuat data.");
     }
     return await response.json();
 }
