@@ -5,7 +5,8 @@
                 <div class="row">
                     <div class="col control-checkbox" v-if="statusOpenOption">
                         <div class="box-checkbox-centered">
-                            <input type="checkbox" v-model="isChecked" class="form-check-input">
+                            <input type="checkbox" v-model="isChecked" class="form-check-input"
+                                style="border: 1px solid #0054a6">
                         </div>
                     </div>
                     <div class="col">

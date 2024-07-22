@@ -4,7 +4,7 @@
  * @returns 
  */
 export async function loadExpense(token) {
-    const url = 'http://expense.ardynsulaeman.cloud/api/expense';
+    const url = 'http://expense.ardynsulaeman.cloud/api/expense?limit=50';
     const response = await fetch(url, {
         method: 'GET',
         headers: {

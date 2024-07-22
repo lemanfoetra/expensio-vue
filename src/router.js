@@ -6,6 +6,7 @@ import PageLogin from './pages/login/PageLogin.vue'
 import PageExpense from './pages/expense/PageExpense.vue'
 import PageHome from './pages/home/PageHome.vue'
 import PagePlanning from './pages/planning/PagePlanning.vue'
+import PageIncome from './pages/income/PageIncome.vue'
 
 const routes = [
     {
@@ -32,6 +33,17 @@ const routes = [
             {
                 path: '',
                 component: PagePlanning,
+            },
+        ],
+    },
+    {
+        path: '/income',
+        meta: { requireAuth: true },
+        component: HeaderNav,
+        children: [
+            {
+                path: '',
+                component: PageIncome,
             },
         ],
     },

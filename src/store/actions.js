@@ -1,7 +1,11 @@
 export default {
     addExpense(context, data) {
         data.key = Math.floor(Math.random() * 100000);
-        context.commit('addExpense', data);
+        context.commit('addExpenseAsFirst', data);
+    },
+    addExpenseLast(context, data) {
+        data.key = Math.floor(Math.random() * 100000);
+        context.commit('addExpenseAsLast', data);
     },
     editExpense(context, data) {
         data.data.key = Math.floor(Math.random() * 100000);

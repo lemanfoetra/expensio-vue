@@ -1,6 +1,9 @@
 export default {
-    addExpense(state, payload) {
+    addExpenseAsFirst(state, payload) {
         state.expense.unshift(payload);
+    },
+    addExpenseAsLast(state, payload) {
+        state.expense.push(payload);
     },
     editExpense(state, payload) {
         const id = payload.id;

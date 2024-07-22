@@ -44,7 +44,7 @@
                                             <span v-else>...</span>
                                         </div>
                                         <div class="text-secondary">
-                                            Pengeluaran Hari Ini
+                                            Pengeluaran hari ini
                                         </div>
                                     </div>
                                 </div>
@@ -79,7 +79,7 @@
                                             <span v-else>...</span>
                                         </div>
                                         <div class="text-secondary">
-                                            Pengeluaran Bulan Ini
+                                            Pengeluaran bulan ini
                                         </div>
                                     </div>
                                 </div>
@@ -114,7 +114,7 @@
                                             -
                                         </div>
                                         <div class="text-secondary">
-                                            Analisis
+                                            Pemasukan bulan ini
                                         </div>
                                     </div>
                                 </div>
@@ -124,7 +124,7 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-6 mb-2">
                         <div class="card">
                             <div class="card-header">
                                 <h4 class="modal-title">Rincian Pengeluaran Hari ini</h4>
@@ -138,7 +138,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-6 mb-2">
                         <div class="card">
                             <div class="card-header">
                                 <h4 class="modal-title">Rincian Pengeluaran Bulan Ini</h4>

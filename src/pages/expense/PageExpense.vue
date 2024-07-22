@@ -55,7 +55,7 @@
                                 <div class="row">
                                     <div class="col control-checkbox">
                                         <input type="checkbox" @change="changeOption" v-model="checkShowOption"
-                                            class="form-check-input" style="margin-top: 6px; margin-bottom: 6px"
+                                            class="form-check-input" style="margin-top: 6px; margin-bottom: 6px; border: 1px solid #0054a6"
                                             :disabled="showButtonDelete">
                                     </div>
                                     <div class="col">
@@ -195,7 +195,7 @@ onMounted(async () => {
         }
         store.dispatch('deleteAllExpense');
         result.data.forEach(expense => {
-            store.dispatch('addExpense', {
+            store.dispatch('addExpenseLast', {
                 date: expense.date,
                 nominal: expense.nominal,
                 deskripsi: expense.deskripsi,
