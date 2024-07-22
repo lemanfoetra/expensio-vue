@@ -40,8 +40,25 @@
                                     </div>
                                     <div class="col">
                                         <div class="font-weight-medium">
-                                            <span v-if="!loadJumlahHariIni">Rp {{ formatCurrency(jumlahPengeluaranHariIni) }}</span>
-                                            <span v-else>...</span>
+                                            <span v-if="!loadJumlahHariIni">Rp {{
+                                                formatCurrency(jumlahPengeluaranHariIni) }}</span>
+                                            <span v-else>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                    class="icon icon-tabler icons-tabler-outline icon-tabler-loader">
+                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                    <path d="M12 6l0 -3" />
+                                                    <path d="M16.25 7.75l2.15 -2.15" />
+                                                    <path d="M18 12l3 0" />
+                                                    <path d="M16.25 16.25l2.15 2.15" />
+                                                    <path d="M12 18l0 3" />
+                                                    <path d="M7.75 16.25l-2.15 2.15" />
+                                                    <path d="M6 12l-3 0" />
+                                                    <path d="M7.75 7.75l-2.15 -2.15" />
+                                                </svg>
+                                                Memuat ...
+                                            </span>
                                         </div>
                                         <div class="text-secondary">
                                             Pengeluaran hari ini
@@ -75,8 +92,25 @@
                                     </div>
                                     <div class="col">
                                         <div class="font-weight-medium">
-                                            <span v-if="!loadJumlahBulanIni">Rp {{ formatCurrency(jumlahPengeluaranBulanIni) }}</span>
-                                            <span v-else>...</span>
+                                            <span v-if="!loadJumlahBulanIni">Rp {{
+                                                formatCurrency(jumlahPengeluaranBulanIni) }}</span>
+                                            <span v-else>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                    class="icon icon-tabler icons-tabler-outline icon-tabler-loader">
+                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                    <path d="M12 6l0 -3" />
+                                                    <path d="M16.25 7.75l2.15 -2.15" />
+                                                    <path d="M18 12l3 0" />
+                                                    <path d="M16.25 16.25l2.15 2.15" />
+                                                    <path d="M12 18l0 3" />
+                                                    <path d="M7.75 16.25l-2.15 2.15" />
+                                                    <path d="M6 12l-3 0" />
+                                                    <path d="M7.75 7.75l-2.15 -2.15" />
+                                                </svg>
+                                                Memuat ...
+                                            </span>
                                         </div>
                                         <div class="text-secondary">
                                             Pengeluaran bulan ini
@@ -127,13 +161,37 @@
                     <div class="col-md-6 mb-2">
                         <div class="card">
                             <div class="card-header">
-                                <h4 class="modal-title">Rincian Pengeluaran Hari ini</h4>
+                                <h4 class="modal-title">
+                                    Rincian Pengeluaran Hari ini
+                                </h4>
                             </div>
                             <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-border">
-                                        <thead></thead>
-                                    </table>
+                                <div v-if="!loadingJumlahHariIni" class="table-responsive">
+                                    <DataTable class="display table table-hover nowrap" :data="dataDetailPengHariIni">
+                                        <thead>
+                                            <tr>
+                                                <th>Nominal</th>
+                                                <th>Deskripsi</th>
+                                            </tr>
+                                        </thead>
+                                    </DataTable>
+                                </div>
+                                <div v-else style="text-align: center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        class="icon icon-tabler icons-tabler-outline icon-tabler-loader">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                        <path d="M12 6l0 -3" />
+                                        <path d="M16.25 7.75l2.15 -2.15" />
+                                        <path d="M18 12l3 0" />
+                                        <path d="M16.25 16.25l2.15 2.15" />
+                                        <path d="M12 18l0 3" />
+                                        <path d="M7.75 16.25l-2.15 2.15" />
+                                        <path d="M6 12l-3 0" />
+                                        <path d="M7.75 7.75l-2.15 -2.15" />
+                                    </svg>
+                                    Memuat ...
                                 </div>
                             </div>
                         </div>
@@ -144,10 +202,33 @@
                                 <h4 class="modal-title">Rincian Pengeluaran Bulan Ini</h4>
                             </div>
                             <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-border">
-                                        <thead></thead>
-                                    </table>
+                                <div v-if="!loadingJumlahBulanIni" class="table-responsive">
+                                    <DataTable class="display table table-hover nowrap" :data="dataDetailPengBulanIni">
+                                        <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th>Tanggal</th>
+                                                <th>Nominal</th>
+                                            </tr>
+                                        </thead>
+                                    </DataTable>
+                                </div>
+                                <div v-else style="text-align: center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        class="icon icon-tabler icons-tabler-outline icon-tabler-loader">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                        <path d="M12 6l0 -3" />
+                                        <path d="M16.25 7.75l2.15 -2.15" />
+                                        <path d="M18 12l3 0" />
+                                        <path d="M16.25 16.25l2.15 2.15" />
+                                        <path d="M12 18l0 3" />
+                                        <path d="M7.75 16.25l-2.15 2.15" />
+                                        <path d="M6 12l-3 0" />
+                                        <path d="M7.75 7.75l-2.15 -2.15" />
+                                    </svg>
+                                    Memuat ...
                                 </div>
                             </div>
                         </div>
@@ -162,20 +243,37 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useStore } from 'vuex'
-import { pengeluaranHariIni, pengeluaranBulanIni } from '../../hooks/dashboard_api';
+import {
+    pengeluaranHariIni,
+    pengeluaranBulanIni,
+    detailPengeluaranHariIni,
+    detailPengeluaranBulanIni
+} from '../../hooks/dashboard_api';
+
+import DataTable from 'datatables.net-vue3';
+import DataTablesCore from 'datatables.net-bs5';
 
 const store = useStore();
-const loadJumlahHariIni = ref(false);
+const loadJumlahHariIni = ref(true);
 const jumlahPengeluaranHariIni = ref(0);
 
-const loadJumlahBulanIni = ref(false);
+const loadJumlahBulanIni = ref(true);
 const jumlahPengeluaranBulanIni = ref(0);
+
+// datatable
+DataTable.use(DataTablesCore);
+const loadingJumlahHariIni = ref(true);
+const dataDetailPengHariIni = ref([]);
+
+const loadingJumlahBulanIni = ref(true);
+const dataDetailPengBulanIni = ref([]);
 
 onMounted(async () => {
     try {
         await loadPengeluaranHariIni();
         await loadPengeluaranBulanIni();
-
+        await loadDetailPengeluaranHaiIni();
+        await loadDetailPengeluaranBulanIni();
     } catch (error) {
         alert(error.message);
     }
@@ -213,8 +311,84 @@ async function loadPengeluaranBulanIni() {
     }
 }
 
+
+async function loadDetailPengeluaranHaiIni() {
+    try {
+        loadingJumlahHariIni.value = true;
+        const token = store.getters.getToken;
+        const result = await detailPengeluaranHariIni(token);
+        if (result.success !== true) {
+            throw new Error(result.message);
+        }
+        result.data.forEach(data => {
+            dataDetailPengHariIni.value.unshift([
+                `Rp ${formatCurrency(data.nominal)}`,
+                data.deskripsi,
+            ]);
+        });
+        loadingJumlahHariIni.value = false;
+    } catch (error) {
+        loadingJumlahHariIni.value = false;
+        alert(error.message);
+    }
+}
+
+
+async function loadDetailPengeluaranBulanIni() {
+    try {
+        loadingJumlahBulanIni.value = true;
+        const token = store.getters.getToken;
+        const result = await detailPengeluaranBulanIni(token);
+        if (result.success !== true) {
+            throw new Error(result.message);
+        }
+        let key = 1;
+        result.data.forEach(data => {
+            console.log(data.date);
+            dataDetailPengBulanIni.value.push([
+                key,
+                `${formatTanggal(data.date)}`,
+                `Rp ${formatCurrency(data.jumlah_nominal)}`,
+            ]);
+            key++;
+        });
+        console.log(dataDetailPengBulanIni.value);
+        loadingJumlahBulanIni.value = false;
+    } catch (error) {
+        loadingJumlahBulanIni.value = false;
+        alert(error.message);
+    }
+}
+
 function formatCurrency(nilai) {
     const formatter = new Intl.NumberFormat('id-ID');
     return formatter.format(nilai);
 }
+
+
+function formatTanggal(tanggalString) {
+    // Mengubah string menjadi objek Date
+    const tanggal = new Date(tanggalString);
+
+    // Menentukan hari dalam bahasa Indonesia
+    const hari = tanggal.toLocaleDateString('id-ID', { weekday: 'long' });
+
+    // Menentukan tanggal, bulan, dan tahun dalam bahasa Indonesia
+    const tanggalFormatted = tanggal.toLocaleDateString('id-ID', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+    });
+
+    // Menggabungkan hari dan tanggal yang sudah diformat
+    return `${hari}, ${tanggalFormatted}`;
+}
 </script>
+
+<style scoped>
+@import 'datatables.net-bs5';
+
+.dt-paging-button {
+    border: 0px solid gray !important;
+}
+</style>
