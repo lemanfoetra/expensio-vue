@@ -55,8 +55,7 @@
                                 <div class="row">
                                     <div class="col control-checkbox">
                                         <input type="checkbox" @change="changeOption" v-model="checkShowOption"
-                                            class="form-check-input"
-                                            style="margin-top: 6px; margin-bottom: 6px; border: 1px solid #0054a6"
+                                            class="form-check-input" style="margin-top: 6px; margin-bottom: 6px; border: 1px solid #0054a6"
                                             :disabled="showButtonDelete">
                                     </div>
                                     <div class="col">
@@ -228,7 +227,7 @@ function editForm(data) {
 }
 
 async function deleteMultipleExpense() {
-    if (!confirm('Anda yakin hapus?')) {
+    if(!confirm('Anda yakin hapus?')){
         return;
     }
     loadingDetele.value = true;
