@@ -61,7 +61,7 @@
                                             </span>
                                         </router-link>
                                     </li>
-                                    <li :class="classActive('/planning')">
+                                    <!-- <li :class="classActive('/planning')">
                                         <router-link class="nav-link" to="/planning">
                                             <span class="nav-link-icon d-md-none d-lg-inline-block">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -104,7 +104,7 @@
                                                 Pemasukan
                                             </span>
                                         </router-link>
-                                    </li>
+                                    </li> -->
                                     <li :class="classActive('/expense')">
                                         <router-link class="nav-link" to="/expense">
                                             <span class="nav-link-icon d-md-none d-lg-inline-block">
