@@ -3,8 +3,15 @@
  * @param {String} token 
  * @returns 
  */
-export async function loadExpense(token) {
-    const url = 'http://expense.ardynsulaeman.cloud/api/expense?limit=50';
+export async function loadExpense(token, params = {}) {
+    let firstDay = '';
+    let lastDay = '';
+   
+    if (JSON.stringify(params) !== '{}') {
+        firstDay = params.firstDay;
+        lastDay = params.lastDay;
+    }
+    const url = `http://expense.ardynsulaeman.cloud/api/expense?limit=100&firstday=${firstDay}&lastday=${lastDay}`;
     const response = await fetch(url, {
         method: 'GET',
         headers: {

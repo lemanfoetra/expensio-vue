@@ -52,14 +52,22 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div class="content-filter">
-                                <div class="row">
-                                    <div class="col control-checkbox">
+                                <div class="">
+                                    <div class="control-checkbox">
                                         <input type="checkbox" @change="changeOption" v-model="checkShowOption"
-                                            class="form-check-input" style="margin-top: 6px; margin-bottom: 6px; border: 1px solid #0054a6"
+                                            class="form-check-input"
+                                            style="margin-top: 6px; margin-bottom: 6px; border: 1px solid #0054a6"
                                             :disabled="showButtonDelete">
                                     </div>
-                                    <div class="col">
-                                        <button v-if="showButtonDelete" @click="deleteMultipleExpense" type="button"
+
+                                    <div v-if="!showButtonDelete" class="box-filter-date">
+                                        <date-filter v-model="filterDateFirst"></date-filter>
+                                        -
+                                        <date-filter v-model="filterDateLast"></date-filter>
+                                    </div>
+
+                                    <div v-if="showButtonDelete" class="box-action-hapus">
+                                        <button @click="deleteMultipleExpense" type="button"
                                             class="action-button-delete btn-sm" :disabled="loadingDetele">
                                             <span v-if="!loadingDetele">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -92,6 +100,7 @@
                                             </span>
                                         </button>
                                     </div>
+
                                 </div>
                             </div>
                         </div>
@@ -143,9 +152,10 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, defineModel } from 'vue';
+import { ref, computed, onMounted, defineModel, watch } from 'vue';
 import { useStore } from 'vuex'
 import { loadExpense, deleteExpense } from '../../hooks/crud_expense'
+import { getStartAndEndOfWeek } from '../../hooks/helpers';
 // import { useRouter } from 'vue-router'
 
 // directive
@@ -154,6 +164,7 @@ import { loadExpense, deleteExpense } from '../../hooks/crud_expense'
 // component
 import ListExpense from './ListExpense.vue';
 import FormExpense from './FormExpense.vue';
+import DateFilter from './DateFilter.vue';
 // import Loading from 'vue-loading-overlay';
 
 // const router = useRouter();
@@ -163,6 +174,8 @@ let loadingExpeses = ref(false);
 let loadingDetele = ref(false);
 let listIdExpense = ref([]);
 const checkShowOption = defineModel('showOption');
+const filterDateFirst = ref('');
+const filterDateLast = ref('');
 
 
 const expenses = computed(function () {
@@ -178,17 +191,43 @@ const showButtonDelete = computed(function () {
     return false;
 });
 
-
+/**
+ * Show checklist di list expense ketika cheklist option di klik
+ */
 const showOption = computed(function () {
     return checkShowOption.value;
 });
 
+/**
+ * Load expense ketika filter tanggal berubah dan ketika halaman pertama kali dimuat
+ */
+watch([filterDateFirst, filterDateLast], async (newValue) => {
+    await loadExpenseFromServer(
+        {
+            'firstDay': newValue[0],
+            'lastDay': newValue[1],
+        }
+    );
+});
+
 
 onMounted(async () => {
+
+    // Default day filter
+    const today = new Date();
+    const result = getStartAndEndOfWeek(today)
+    filterDateFirst.value = result.startOfWeek;
+    filterDateLast.value = result.endOfWeek;
+})
+
+/**
+ * Load expense dari server
+ */
+async function loadExpenseFromServer(params) {
     loadingExpeses.value = true;
     try {
         const token = store.getters.getToken;
-        const result = await loadExpense(token);
+        const result = await loadExpense(token, params);
 
         if (!result.success === true) {
             throw new Error("Gagal memuat data.");
@@ -207,9 +246,11 @@ onMounted(async () => {
         loadingExpeses.value = false;
         alert(error.message);
     }
-})
+}
 
-
+/**
+ * Checklist opsi
+ */
 function changeOption() {
     if (checkShowOption.value && listIdExpense.value > 0) {
         listIdExpense.value = [];
@@ -227,7 +268,7 @@ function editForm(data) {
 }
 
 async function deleteMultipleExpense() {
-    if(!confirm('Anda yakin hapus?')){
+    if (!confirm('Anda yakin hapus?')) {
         return;
     }
     loadingDetele.value = true;
@@ -267,14 +308,19 @@ function onCheckboxClick(value) {
 }
 </script>
 
+
 <style scoped>
 .content-filter {
     padding: 10px;
     margin-bottom: 0px !important;
+    white-space: nowrap;
+    overflow-x: auto;
 }
 
 .control-checkbox {
-    max-width: 50px !important;
+    display: inline;
+    padding-left: 10px;
+    max-width: 45px !important;
     text-align: center !important;
 }
 
@@ -288,5 +334,15 @@ function onCheckboxClick(value) {
 
 .action-button-delete:hover {
     background-color: antiquewhite;
+}
+
+.box-filter-date {
+    display: inline;
+    margin-left: 20px;
+}
+
+.box-action-hapus {
+    display: inline;
+    margin-left: 20px;
 }
 </style>
