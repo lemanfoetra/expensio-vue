@@ -22,8 +22,10 @@ function updateValue(value) {
     border: 1px solid #0054a6;
     border-radius: 5px;
     padding: 3px;
-    margin-right: 10px;
-    margin-left: 10px;
+    margin-right: 5px;
+    margin-left: 5px;
     margin-top: 2px;
+    background-color: white;
+    color: black;
 }
 </style>
