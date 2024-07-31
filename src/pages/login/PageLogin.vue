@@ -112,7 +112,7 @@ async function sumbitLogin() {
             throw new Error("Mohon isi semua inputan.");
         }
 
-        const url = 'http://expense.ardynsulaeman.cloud/api/login';
+        const url = 'http://api.expense.ardynsulaeman.cloud/api/login';
         const data = {
             email: email.value,
             password: password.value
