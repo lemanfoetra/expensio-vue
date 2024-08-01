@@ -2,7 +2,8 @@
     <div class="page page-center">
         <div class="container container-tight py-4">
             <div class="text-center mb-4">
-                <h4>Expensive</h4>
+                <h2>Expensio</h2>
+                <h4>By Ardyn Sulaeman</h4>
             </div>
 
             <div v-if="!validForm" class="alert alert-danger" role="alert">

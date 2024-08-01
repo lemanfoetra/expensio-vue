@@ -7,9 +7,9 @@
                 </button>
                 <h1 class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
                     <div>
-                        <span>Expensive</span>
+                        <span>Expensio</span>
                         <div style="font-size: 12px; color: gray; margin-top: 5px;">
-                            Can't save more your money?
+                            Improve your spending 
                         </div>
                     </div>
                 </h1>
