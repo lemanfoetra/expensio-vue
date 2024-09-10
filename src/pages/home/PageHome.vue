@@ -10,13 +10,21 @@
                                 Dashboard dan Analisis
                             </h2>
                         </div>
+
+                        <div class="col-auto ms-auto d-print-none">
+                            <select class="form-control" v-model="filter">
+                                <option value="pengeluaran">Pengeluaran</option>
+                                <option value="rata-rata">Rata-rata pengeluaran</option>
+                                <option value="status">Status pengeluaran</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
         <div class="page-body">
             <div class="container-xl">
-                <div class="row">
+                <div v-if="filter == 'pengeluaran'" class="row">
                     <div class="col-sm-6 col-md-4 mb-2">
                         <div class="card card-sm">
                             <div class="card-body">
@@ -174,7 +182,7 @@
                     </div>
                 </div>
 
-                <div class="row">
+                <div v-if="filter == 'rata-rata'" class="row">
                     <div class="col-sm-6 col-md-4 mb-2">
                         <div class="card card-sm">
                             <div class="card-body">
@@ -278,7 +286,7 @@
                     </div>
                 </div>
 
-                <div class="row">
+                <div v-if="filter == 'status'" class="row">
                     <div class="col-sm-6 col-md-4 mb-2">
                         <div class="card card-sm">
                             <div class="card-body">
@@ -565,6 +573,8 @@ const dataDetailPengMingguIni = ref([]);
 const loadingJumlahBulanIni = ref(true);
 const dataDetailPengBulanIni = ref([]);
 
+const filter = ref('pengeluaran');
+
 onMounted(async () => {
     try {
         await loadPengeluaranHariIni();
@@ -734,6 +744,7 @@ function formatTanggalTanpaNama(tanggalString) {
     });
     return `${tanggalFormatted}`;
 }
+
 </script>
 
 <style scoped>
