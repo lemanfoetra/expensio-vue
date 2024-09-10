@@ -7,7 +7,7 @@
                     <div class="row g-2 align-items-center">
                         <div class="col">
                             <h2 class="page-title">
-                                Dashboard dan Analisis
+                                Dashboard
                             </h2>
                         </div>
 
