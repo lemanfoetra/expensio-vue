@@ -40,6 +40,7 @@ export async function insertExpense(token, data) {
         date: data.date,
         nominal: data.nominal,
         deskripsi: data.deskripsi,
+        id_tipe_expense : data.id_tipe_expense,
     };
     const response = await fetch(url, {
         method: 'POST',
@@ -109,6 +110,23 @@ export async function deleteExpense(token, idExpense) {
  */
 export async function showExpense(token, idExpense) {
     const url = 'http://api.expense.ardynsulaeman.cloud/api/expense/' + idExpense;
+    const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+    });
+    if (!response.ok) {
+        throw new Error("Gagal memuat data.");
+    }
+    return await response.json();
+}
+
+
+export async function getTypeExpense(token) {
+    const url = 'http://api.expense.ardynsulaeman.cloud/api/tipe_expense';
     const response = await fetch(url, {
         method: 'GET',
         headers: {

@@ -16,7 +16,7 @@
                                 <button type="button" style="display: none;" id="buton_open_modal"
                                     data-bs-toggle="modal" data-bs-target="#modal-simple"></button>
                                 <button @click="addForm" type="button" class="btn btn-primary d-none d-sm-inline-block"
-                                    data-bs-toggle="modal" data-bs-target="#modal-simple">
+                                    data-bs-toggle="modal" data-bs-target="#modal-simple" :disabled="loadingFormData">
                                     <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -28,8 +28,7 @@
                                     Tambah Pengeluaran
                                 </button>
                                 <button @click="addForm" type="button" class="btn btn-primary d-sm-none btn-icon"
-                                    data-bs-toggle="modal" data-bs-target="#modal-simple"
-                                    aria-label="Create new report">
+                                    data-bs-toggle="modal" data-bs-target="#modal-simple" :disabled="loadingFormData">
                                     <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -145,7 +144,8 @@
                     <div v-else>
                         <list-expense v-for="expense in expenses" :key="expense.key" :id="expense.id"
                             :tanggal="expense.date" :nominal="expense.nominal" :keterangan="expense.deskripsi"
-                            @click-detail="editForm" @on-checkbox-click="onCheckboxClick" :show-option="showOption">
+                            :tipe_expense="expense.tipe_expense" @click-detail="editForm"
+                            @on-checkbox-click="onCheckboxClick" :show-option="showOption">
                         </list-expense>
                     </div>
                 </div>
@@ -155,7 +155,7 @@
 
     <div class="modal modal-blur fade" id="modal-simple" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
-            <form-expense @submit="onSubmited" :idExpense="idExpense"></form-expense>
+            <form-expense @submit="onSubmited" :idExpense="idExpense" :type-expenses="typeExpenses"></form-expense>
         </div>
     </div>
 </template>
@@ -163,7 +163,7 @@
 <script setup>
 import { ref, computed, onMounted, defineModel, watch } from 'vue';
 import { useStore } from 'vuex'
-import { loadExpense, deleteExpense } from '../../hooks/crud_expense'
+import { loadExpense, deleteExpense, getTypeExpense } from '../../hooks/crud_expense'
 import { getStartAndEndOfWeek } from '../../hooks/helpers';
 // import { useRouter } from 'vue-router'
 
@@ -181,7 +181,9 @@ const store = useStore();
 let idExpense = ref(0);
 let loadingExpeses = ref(false);
 let loadingDetele = ref(false);
+const loadingFormData = ref(false);
 let listIdExpense = ref([]);
+const typeExpenses = ref([]);
 const checkShowOption = defineModel('showOption');
 const filterDateFirst = ref('');
 const filterDateLast = ref('');
@@ -227,6 +229,7 @@ onMounted(async () => {
     const result = getStartAndEndOfWeek(today)
     filterDateFirst.value = result.startOfWeek;
     filterDateLast.value = result.endOfWeek;
+    await loadListTypeExpense();
 })
 
 /**
@@ -248,11 +251,34 @@ async function loadExpenseFromServer(params) {
                 nominal: expense.nominal,
                 deskripsi: expense.deskripsi,
                 id: expense.id,
+                id_tipe_expense: expense.id_tipe_expense,
+                tipe_expense: expense.tipe_expense,
             });
         });
         loadingExpeses.value = false;
     } catch (error) {
         loadingExpeses.value = false;
+        alert(error.message);
+    }
+}
+
+async function loadListTypeExpense() {
+    loadingFormData.value = true;
+    try {
+        const token = store.getters.getToken;
+        const result = await getTypeExpense(token);
+
+        typeExpenses.value = [];
+        result.data.forEach(element => {
+            const newData = {
+                id: element.id,
+                tipe: element.tipe,
+            };
+            typeExpenses.value.push(newData);
+        });
+        loadingFormData.value = false;
+    } catch (error) {
+        loadingFormData.value = false;
         alert(error.message);
     }
 }
