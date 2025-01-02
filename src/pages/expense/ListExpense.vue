@@ -16,7 +16,10 @@
                             <div class="keterangan">{{ vketerangan }}</div>
                         </div>
                         <div class="expense_tipe">
-                            <span class="badge badge-outline text-blue">{{ tipe_expense }}</span>
+                            <span v-if="id_tipe_expense === 1" class="badge badge-outline text-green">{{ tipe_expense }}</span>
+                            <span v-if="id_tipe_expense === 2" class="badge badge-outline text-red">{{ tipe_expense }}</span>
+                            <span v-if="id_tipe_expense === 3" class="badge badge-outline text-yellow">{{ tipe_expense }}</span>
+                            <span v-if="id_tipe_expense === 4" class="badge badge-outline text-blue">{{ tipe_expense }}</span>
                         </div>
                     </div>
                 </div>
@@ -29,7 +32,7 @@
 import { ref, watch, defineProps, defineEmits, defineModel } from 'vue';
 
 
-const props = defineProps(['showOption', 'id', 'tanggal', 'nominal', 'keterangan', 'tipe_expense']);
+const props = defineProps(['showOption', 'id', 'tanggal', 'nominal', 'keterangan', 'tipe_expense', 'id_tipe_expense']);
 const emit = defineEmits(['clickDetail', 'onCheckboxClick']);
 
 let statusOpenOption = ref(props.showOption);

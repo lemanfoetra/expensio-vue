@@ -144,7 +144,7 @@
                     <div v-else>
                         <list-expense v-for="expense in expenses" :key="expense.key" :id="expense.id"
                             :tanggal="expense.date" :nominal="expense.nominal" :keterangan="expense.deskripsi"
-                            :tipe_expense="expense.tipe_expense" @click-detail="editForm"
+                            :tipe_expense="expense.tipe_expense" :id_tipe_expense="expense.id_tipe_expense" @click-detail="editForm"
                             @on-checkbox-click="onCheckboxClick" :show-option="showOption">
                         </list-expense>
                     </div>
