@@ -126,7 +126,7 @@ export async function showExpense(token, idExpense) {
 
 
 export async function getTypeExpense(token) {
-    const url = 'http://api.expense.ardynsulaeman.cloud/api/tipe_expense';
+    const url = 'https://xpayapi.texva.id/api/tipe_expense';
     const response = await fetch(url, {
         method: 'GET',
         headers: {
