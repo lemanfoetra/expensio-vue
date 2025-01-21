@@ -11,7 +11,7 @@ export async function loadExpense(token, params = {}) {
         firstDay = params.firstDay;
         lastDay = params.lastDay;
     }
-    const url = `http://api.expense.ardynsulaeman.cloud/api/expense?limit=100&firstday=${firstDay}&lastday=${lastDay}`;
+    const url = `https://xpayapi.texva.id/api/expense?limit=100&firstday=${firstDay}&lastday=${lastDay}`;
     const response = await fetch(url, {
         method: 'GET',
         headers: {
@@ -35,7 +35,7 @@ export async function loadExpense(token, params = {}) {
  */
 export async function insertExpense(token, data) {
     // Add Expanse
-    const url = 'http://api.expense.ardynsulaeman.cloud/api/expense';
+    const url = 'https://xpayapi.texva.id/api/expense';
     const dataPost = {
         date: data.date,
         nominal: data.nominal,
@@ -65,7 +65,7 @@ export async function insertExpense(token, data) {
  */
 export async function updateExpense(token, idExpense, data) {
     // Edit Expanse
-    const url = `http://api.expense.ardynsulaeman.cloud/api/expense/${idExpense}`;
+    const url = `https://xpayapi.texva.id/api/expense/${idExpense}`;
     const response = await fetch(url, {
         method: 'PUT',
         headers: {
@@ -87,7 +87,7 @@ export async function updateExpense(token, idExpense, data) {
  * @returns 
  */
 export async function deleteExpense(token, idExpense) {
-    const url = `http://api.expense.ardynsulaeman.cloud/api/expense/${idExpense}`;
+    const url = `https://xpayapi.texva.id/api/expense/${idExpense}`;
     const response = await fetch(url, {
         method: 'DELETE',
         headers: {
@@ -108,7 +108,7 @@ export async function deleteExpense(token, idExpense) {
  * @returns 
  */
 export async function showExpense(token, idExpense) {
-    const url = 'http://api.expense.ardynsulaeman.cloud/api/expense/' + idExpense;
+    const url = 'https://xpayapi.texva.id/api/expense/' + idExpense;
     const response = await fetch(url, {
         method: 'GET',
         headers: {

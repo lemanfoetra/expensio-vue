@@ -2,8 +2,8 @@
     <div class="page page-center">
         <div class="container container-tight py-4">
             <div class="text-center mb-4">
-                <h2>Expensio</h2>
-                <h4>By Ardyn Sulaeman</h4>
+                <h2>XPay</h2>
+                <h4>By Texva.id</h4>
             </div>
 
             <div v-if="!validForm" class="alert alert-danger" role="alert">
@@ -113,7 +113,7 @@ async function sumbitLogin() {
             throw new Error("Mohon isi semua inputan.");
         }
 
-        const url = 'http://api.expense.ardynsulaeman.cloud/api/login';
+        const url = 'https://xpayapi.texva.id/api/login';
         const data = {
             email: email.value,
             password: password.value
