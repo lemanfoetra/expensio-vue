@@ -2,18 +2,24 @@
     <div class="col-md-12 list-expense">
         <div class="card">
             <div class="my-card-body">
-                <div class="row">
-                    <div class="col control-checkbox" v-if="statusOpenOption">
+                <div class="expense_box">
+                    <div class="control-checkbox" v-if="statusOpenOption">
                         <div class="box-checkbox-centered">
                             <input type="checkbox" v-model="isChecked" class="form-check-input"
                                 style="border: 1px solid #0054a6">
                         </div>
                     </div>
-                    <div class="col">
-                        <div class="content" @click="clickToDetail">
+                    <div class="expense_item_column" @click="clickToDetail">
+                        <div class="content">
                             <div class="tanggal">{{ vdate }}</div>
                             <div class="nominal">Rp {{ vnominal }}</div>
                             <div class="keterangan">{{ vketerangan }}</div>
+                        </div>
+                        <div class="expense_tipe">
+                            <span v-if="id_tipe_expense === 1" class="badge badge-outline text-green">{{ tipe_expense }}</span>
+                            <span v-if="id_tipe_expense === 2" class="badge badge-outline text-red">{{ tipe_expense }}</span>
+                            <span v-if="id_tipe_expense === 3" class="badge badge-outline text-yellow">{{ tipe_expense }}</span>
+                            <span v-if="id_tipe_expense === 4" class="badge badge-outline text-blue">{{ tipe_expense }}</span>
                         </div>
                     </div>
                 </div>
@@ -26,7 +32,7 @@
 import { ref, watch, defineProps, defineEmits, defineModel } from 'vue';
 
 
-const props = defineProps(['showOption', 'id', 'tanggal', 'nominal', 'keterangan']);
+const props = defineProps(['showOption', 'id', 'tanggal', 'nominal', 'keterangan', 'tipe_expense', 'id_tipe_expense']);
 const emit = defineEmits(['clickDetail', 'onCheckboxClick']);
 
 let statusOpenOption = ref(props.showOption);
@@ -83,6 +89,7 @@ function formatCurrency(nilai) {
 }
 
 .control-checkbox {
+    margin-right: 20px;
     max-width: 50px !important;
     text-align: center !important;
 }
@@ -130,4 +137,16 @@ function formatCurrency(nilai) {
 .width_100px {
     width: 50px !important;
 }
+
+.expense_box {
+    display: flex;
+}
+
+.expense_item_column {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.expense_tipe {}
 </style>

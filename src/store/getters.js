@@ -26,5 +26,9 @@ export default {
             token = localStorage.getItem('access_token');
         }
         return token;
+    },
+
+    getTypeExpenses(state) {
+        return state.typeExpenses;
     }
 }

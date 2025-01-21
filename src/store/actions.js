@@ -29,5 +29,14 @@ export default {
         localStorage.removeItem('access_token');
         localStorage.removeItem('user');
         context.commit('logout');
-    }
+    },
+
+    typeExpenseReset(context) {
+        context.commit('typeExpenseReset');
+    },
+
+    typeExpensesAdd(context, data) {
+        data.key = Math.floor(Math.random() * 100000);
+        context.commit('typeExpensesAdd', data);
+    },
 }

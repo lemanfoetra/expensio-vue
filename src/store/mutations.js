@@ -37,5 +37,12 @@ export default {
     logout(state) {
         state.token = '';
         state.user = null;
-    }
+    },
+
+    typeExpenseReset(state) {
+        state.typeExpenses = [];
+    },
+    typeExpensesAdd(state, payload) {
+        state.typeExpenses.push(payload);
+    },
 }

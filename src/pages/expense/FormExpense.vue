@@ -23,6 +23,15 @@
                         <textarea class="form-control" id="deskripsi" v-model.trim="deskripsi" rows="10"></textarea>
                         <label for="deskripsi">Deskripsi</label>
                     </div>
+                    <div class="form-floating mb-3">
+                        <select class="form-control" v-model="selectedTypeExpenses">
+                            <option value="">Pilih</option>
+                            <option v-for="tipe in props.typeExpenses" :key="tipe.key" :value="tipe.id">
+                                {{ tipe.tipe }}
+                            </option>
+                        </select>
+                        <label for="deskripsi">Tipe Pengeluaran</label>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer text-center">
@@ -62,14 +71,17 @@ import 'vue-loading-overlay/dist/css/index.css';
 
 const store = useStore();
 const emit = defineEmits(['submit']);
-const props = defineProps(['idExpense']);
+const props = defineProps(['idExpense', 'typeExpenses']);
 
 const date = defineModel('date');
 const nominal = defineModel('nominal');
 const deskripsi = defineModel('deskripsi');
+const selectedTypeExpenses = defineModel('selectedTypeExpenses');
+
 const idExpense = ref(0);
 const statusMemuat = ref(false);
 const loadingPost = ref(false);
+const typeExpenses = ref(props.typeExpenses);
 
 watch(() => props.idExpense, (newValue) => {
     idExpense.value = newValue;
@@ -77,10 +89,15 @@ watch(() => props.idExpense, (newValue) => {
         date.value = '';
         nominal.value = '';
         deskripsi.value = '';
+        selectedTypeExpenses.value = '';
     } else {
         // LOAD DATA EDIT (EXISTING)
         loadExistingExpanse(idExpense.value);
     }
+});
+
+watch(() => props.typeExpenses, (newValue) => {
+    typeExpenses.value = newValue;
 });
 
 /**
@@ -98,12 +115,15 @@ async function loadExistingExpanse(id) {
         date.value = result.data.date;
         nominal.value = result.data.nominal;
         deskripsi.value = result.data.deskripsi;
+        selectedTypeExpenses.value = result.data.id_tipe_expense;
 
         const newData = {
             id: result.data.id,
             date: result.data.date,
             nominal: result.data.nominal,
             deskripsi: result.data.deskripsi,
+            id_tipe_expense: result.data.id_tipe_expense,
+            tipe_expense: result.data.tipe_expense,
         }
         store.dispatch('editExpense', {
             'id': idExpense.value,
@@ -123,15 +143,21 @@ async function submitForm() {
     try {
 
         // Validasi From
-        if ((date.value || '') === '' || (nominal.value || '') === '' || (deskripsi.value || '') === '') {
+        if ((date.value || '') === '' || (nominal.value || '') === '' || (deskripsi.value || '') === '' || (selectedTypeExpenses.value || '') === '') {
             throw new Error('Mohon isi semua bidang isian');
         }
+
+        // GET NAME EXPENSE TIPE
+        const index = typeExpenses.value.findIndex(ex => ex.id === selectedTypeExpenses.value);
+        let type_expense = typeExpenses.value[index].tipe;
 
         // Initiate data
         const dataPost = {
             date: date.value,
             nominal: nominal.value,
-            deskripsi: deskripsi.value
+            deskripsi: deskripsi.value,
+            id_tipe_expense: selectedTypeExpenses.value,
+            tipe_expense: type_expense,
         }
 
         // Action on submit

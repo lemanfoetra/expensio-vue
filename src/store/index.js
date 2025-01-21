@@ -9,6 +9,7 @@ const store = createStore({
             expense: [],
             token: '',
             user: '',
+            typeExpenses: [],
         }
     },
     mutations: mutations,
