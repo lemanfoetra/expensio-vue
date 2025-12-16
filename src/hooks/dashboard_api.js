@@ -1,6 +1,6 @@
 
 export async function pengeluaranHariIni(token) {
-    const url = 'https://xpayapi.texva.id/api/dashboard/jumlah_pengeluaran_hari_ini';
+    const url = 'http://expensio-backend.local/api/dashboard/jumlah_pengeluaran_hari_ini';
     const response = await fetch(url, {
         method: 'GET',
         headers: {
@@ -17,7 +17,7 @@ export async function pengeluaranHariIni(token) {
 
 
 export async function pengeluaranMingguIni(token) {
-    const url = 'https://xpayapi.texva.id/api/dashboard/jumlah_pengeluaran_minggu_ini';
+    const url = 'http://expensio-backend.local/api/dashboard/jumlah_pengeluaran_minggu_ini';
     const response = await fetch(url, {
         method: 'GET',
         headers: {
@@ -34,7 +34,7 @@ export async function pengeluaranMingguIni(token) {
 
 
 export async function pengeluaranBulanIni(token) {
-    const url = 'https://xpayapi.texva.id/api/dashboard/jumlah_pengeluaran_bulan_ini';
+    const url = 'http://expensio-backend.local/api/dashboard/jumlah_pengeluaran_bulan_ini';
     const response = await fetch(url, {
         method: 'GET',
         headers: {
@@ -51,7 +51,7 @@ export async function pengeluaranBulanIni(token) {
 
 
 export async function detailPengeluaranHariIni(token) {
-    const url = 'https://xpayapi.texva.id/api/dashboard/detail_pengeluaran_hari_ini';
+    const url = 'http://expensio-backend.local/api/dashboard/detail_pengeluaran_hari_ini';
     const response = await fetch(url, {
         method: 'GET',
         headers: {
@@ -68,7 +68,7 @@ export async function detailPengeluaranHariIni(token) {
 
 
 export async function detailPengeluaranMingguIni(token) {
-    const url = 'https://xpayapi.texva.id/api/dashboard/detail_pengeluaran_minggu_ini';
+    const url = 'http://expensio-backend.local/api/dashboard/detail_pengeluaran_minggu_ini';
     const response = await fetch(url, {
         method: 'GET',
         headers: {
@@ -85,7 +85,7 @@ export async function detailPengeluaranMingguIni(token) {
 
 
 export async function detailPengeluaranBulanIni(token) {
-    const url = 'https://xpayapi.texva.id/api/dashboard/detail_pengeluaran_bulan_ini';
+    const url = 'http://expensio-backend.local/api/dashboard/detail_pengeluaran_bulan_ini';
     const response = await fetch(url, {
         method: 'GET',
         headers: {

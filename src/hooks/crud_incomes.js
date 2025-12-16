@@ -1,9 +1,9 @@
 /**
- * Load Expense to server
+ * Load Income to server
  * @param {String} token 
  * @returns 
  */
-export async function loadExpense(token, params = {}) {
+export async function loadIncome(token, params = {}) {
     let firstDay = '';
     let lastDay = '';
    
@@ -11,7 +11,7 @@ export async function loadExpense(token, params = {}) {
         firstDay = params.firstDay;
         lastDay = params.lastDay;
     }
-    const url = `http://expensio-backend.local/api/expense?limit=100&firstday=${firstDay}&lastday=${lastDay}`;
+    const url = `http://expensio-backend.local/api/income?limit=100&firstday=${firstDay}&lastday=${lastDay}`;
     const response = await fetch(url, {
         method: 'GET',
         headers: {
@@ -28,20 +28,14 @@ export async function loadExpense(token, params = {}) {
 
 
 /**
- * Insert expense to server
+ * Insert income to server
  * @param {String} token 
  * @param {Object} data 
  * @returns 
  */
-export async function insertExpense(token, data) {
+export async function insertIncome(token, data) {
     // Add Expanse
-    const url = 'http://expensio-backend.local/api/expense';
-    const dataPost = {
-        date: data.date,
-        nominal: data.nominal,
-        deskripsi: data.deskripsi,
-        id_tipe_expense : data.id_tipe_expense,
-    };
+    const url = 'http://expensio-backend.local/api/income';
     const response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -49,7 +43,7 @@ export async function insertExpense(token, data) {
             'Accept': 'application/json',
             'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(dataPost)
+        body: JSON.stringify(data)
     });
     if (!response.ok) {
         throw new Error("Tambah data gagal.");
@@ -58,15 +52,15 @@ export async function insertExpense(token, data) {
 }
 
 /**
- * Update Expense by Id
+ * Update Income by Id
  * @param {*} token 
  * @param {*} idExpense 
  * @param {*} data 
  * @returns 
  */
-export async function updateExpense(token, idExpense, data) {
+export async function updateIncome(token, idExpense, data) {
     // Edit Expanse
-    const url = `http://expensio-backend.local/api/expense/${idExpense}`;
+    const url = `http://expensio-backend.local/api/income/${idExpense}`;
     const response = await fetch(url, {
         method: 'PUT',
         headers: {
@@ -82,13 +76,13 @@ export async function updateExpense(token, idExpense, data) {
 }
 
 /**
- * Delete Expense by Id
+ * Delete Income by Id
  * @param {string} token 
  * @param {number} idExpense 
  * @returns 
  */
-export async function deleteExpense(token, idExpense) {
-    const url = `http://expensio-backend.local/api/expense/${idExpense}`;
+export async function deleteIncome(token, idExpense) {
+    const url = `http://expensio-backend.local/api/income/${idExpense}`;
     const response = await fetch(url, {
         method: 'DELETE',
         headers: {
@@ -103,30 +97,13 @@ export async function deleteExpense(token, idExpense) {
 }
 
 /**
- * Show Expense by Id
+ * Show Income by Id
  * @param {string} token 
  * @param {number} idExpense 
  * @returns 
  */
 export async function showExpense(token, idExpense) {
-    const url = 'http://expensio-backend.local/api/expense/' + idExpense;
-    const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Authorization': `Bearer ${token}`
-        },
-    });
-    if (!response.ok) {
-        throw new Error("Gagal memuat data.");
-    }
-    return await response.json();
-}
-
-
-export async function getTypeExpense(token) {
-    const url = 'http://expensio-backend.local/api/tipe_expense';
+    const url = 'http://expensio-backend.local/api/income/' + idExpense;
     const response = await fetch(url, {
         method: 'GET',
         headers: {

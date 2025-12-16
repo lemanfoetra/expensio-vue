@@ -10,6 +10,7 @@ const store = createStore({
             token: '',
             user: '',
             typeExpenses: [],
+            incomes: [],
         }
     },
     mutations: mutations,
