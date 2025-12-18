@@ -75,7 +75,7 @@
                                     </div>
 
                                     <div v-if="showButtonDelete" class="box-action-hapus">
-                                        <button @click="deleteMultipleExpense" type="button"
+                                        <button @click="deleteMultipleIncomes" type="button"
                                             class="action-button-delete btn-sm" :disabled="loadingDetele">
                                             <span v-if="!loadingDetele">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -113,7 +113,7 @@
                             </div>
                         </div>
                     </div>
-                    <div v-if="loadingExpeses" class="col-md-12">
+                    <div v-if="loadingIncomes" class="col-md-12">
                         <div class="card mt-2">
                             <div style="padding: 10px; text-align: center;">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -134,7 +134,7 @@
                             </div>
                         </div>
                     </div>
-                    <div v-else-if="!loadingExpeses && incomes.length == 0">
+                    <div v-else-if="!loadingIncomes && incomes.length == 0">
                         <div class="card mt-2">
                             <div style="padding: 10px; text-align: center;">
                                 Tidak ada data
@@ -142,9 +142,8 @@
                         </div>
                     </div>
                     <div v-else>
-                        <list-income v-for="income in incomes" :key="income.key" :id="income.id"
-                            :tanggal="income.date" :nominal="income.nominal" :keterangan="income.deskripsi"
-                            :tipe_expense="income.tipe_expense" :id_tipe_expense="income.id_tipe_expense" @click-detail="editForm"
+                        <list-income v-for="income in incomes" :key="income.key" :id="income.id" :source="income.source"
+                            :income_date="income.income_date" :amount="income.amount" @click-detail="editForm"
                             @on-checkbox-click="onCheckboxClick" :show-option="showOption">
                         </list-income>
                     </div>
@@ -155,7 +154,7 @@
 
     <div class="modal modal-blur fade" id="modal-simple" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
-            <form-income @submit="onSubmited" :idExpense="idExpense" :type-incomes="typeExpenses"></form-income>
+            <form-income @submit="onSubmited" :id_income="id_income" :type-incomes="typeExpenses"></form-income>
         </div>
     </div>
 </template>
@@ -163,20 +162,21 @@
 <script setup>
 import { ref, computed, onMounted, defineModel, watch } from 'vue';
 import { useStore } from 'vuex'
-import { loadExpense, deleteExpense, getTypeExpense } from '../../hooks/crud_expense'
 import { getStartAndEndOfWeek } from '../../hooks/helpers';
 
 // component
 import ListIncome from './ListIncome.vue';
 import DateFilter from './DateFilter.vue';
+import { deleteIncome, loadIncome } from '@/hooks/crud_incomes';
+import FormIncome from './FormIncome.vue';
 
 // const router = useRouter();
 const store = useStore();
-let idExpense = ref(0);
-let loadingExpeses = ref(false);
+let id_income = ref(0);
+let loadingIncomes = ref(false);
 let loadingDetele = ref(false);
 const loadingFormData = ref(false);
-let listIdExpense = ref([]);
+let listIdIncome = ref([]);
 const typeExpenses = ref([]);
 const checkShowOption = defineModel('showOption');
 const filterDateFirst = ref('');
@@ -190,7 +190,7 @@ const incomes = computed(function () {
 
 
 const showButtonDelete = computed(function () {
-    if (listIdExpense.value.length > 0) {
+    if (listIdIncome.value.length > 0) {
         return true;
     }
     return false;
@@ -222,96 +222,76 @@ onMounted(async () => {
     const result = getStartAndEndOfWeek(today)
     filterDateFirst.value = result.startOfWeek;
     filterDateLast.value = result.endOfWeek;
-    await loadListTypeExpense();
 })
 
 /**
  * Load income dari server
  */
 async function loadIncomeFromServer(params) {
-    loadingExpeses.value = true;
+    loadingIncomes.value = true;
     try {
         const token = store.getters.getToken;
-        const result = await loadExpense(token, params);
+        const result = await loadIncome(token, params);
 
         if (!result.success === true) {
             throw new Error("Gagal memuat data.");
         }
-        store.dispatch('deleteAllExpense');
+        store.dispatch('deleteAllIncome');
         result.data.forEach(income => {
-            store.dispatch('addExpenseLast', {
-                date: income.date,
-                nominal: income.nominal,
-                deskripsi: income.deskripsi,
+            store.dispatch('addIncomeLast', {
                 id: income.id,
-                id_tipe_expense: income.id_tipe_expense,
-                tipe_expense: income.tipe_expense,
+                id_users: income.id_users,
+                income_date: income.income_date,
+                source: income.source,
+                amount: income.amount,
+                created_at: income.created_at,
+                updated_at: income.updated_at,
             });
         });
-        loadingExpeses.value = false;
+        loadingIncomes.value = false;
     } catch (error) {
-        loadingExpeses.value = false;
+        loadingIncomes.value = false;
         alert(error.message);
     }
 }
 
-async function loadListTypeExpense() {
-    loadingFormData.value = true;
-    try {
-        const token = store.getters.getToken;
-        const result = await getTypeExpense(token);
-
-        typeExpenses.value = [];
-        result.data.forEach(element => {
-            const newData = {
-                id: element.id,
-                tipe: element.tipe,
-            };
-            typeExpenses.value.push(newData);
-        });
-        loadingFormData.value = false;
-    } catch (error) {
-        loadingFormData.value = false;
-        alert(error.message);
-    }
-}
 
 /**
  * Checklist opsi
  */
 function changeOption() {
-    if (checkShowOption.value && listIdExpense.value > 0) {
-        listIdExpense.value = [];
+    if (checkShowOption.value && listIdIncome.value > 0) {
+        listIdIncome.value = [];
     }
 }
 
 
 function addForm() {
-    idExpense.value = 0;
+    id_income.value = 0;
 }
 
 function editForm(data) {
-    idExpense.value = data;
+    id_income.value = data;
     document.getElementById('buton_open_modal').click();
 }
 
-async function deleteMultipleExpense() {
+async function deleteMultipleIncomes() {
     if (!confirm('Anda yakin hapus?')) {
         return;
     }
     loadingDetele.value = true;
     try {
-        if (listIdExpense.value.length > 0) {
-            for await (const id of listIdExpense.value) {
-                const result = await deleteExpense(store.getters.getToken, id);
+        if (listIdIncome.value.length > 0) {
+            for await (const id of listIdIncome.value) {
+                const result = await deleteIncome(store.getters.getToken, id);
                 // const result = await response.json();
                 if (result.success !== true) {
                     throw new Error('Hapus data gagal.')
                 }
             }
 
-            store.dispatch('deleteExpense', listIdExpense.value);
-            listIdExpense.value = [];
+            store.dispatch('deleteIncome', listIdIncome.value);
+            listIdIncome.value = [];
         }
         loadingDetele.value = false;
     } catch (error) {
@@ -321,16 +301,16 @@ async function deleteMultipleExpense() {
 }
 
 function onSubmited() {
-    idExpense.value = 0;
+    id_income.value = 0;
 }
 
 function onCheckboxClick(value) {
     if (value.status) {
-        listIdExpense.value.push(value.id);
+        listIdIncome.value.push(value.id);
     } else {
-        const index = listIdExpense.value.findIndex(ex => ex === value.id);
+        const index = listIdIncome.value.findIndex(ex => ex === value.id);
         if (index > -1) {
-            listIdExpense.value.splice(index, 1);
+            listIdIncome.value.splice(index, 1);
         }
     }
 }

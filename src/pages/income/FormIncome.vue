@@ -55,34 +55,33 @@
 <script setup>
 import { ref, watch, defineModel, defineEmits, defineProps } from 'vue';
 import { useStore } from 'vuex'
-import { showExpense } from '../../hooks/crud_expense'
 
 import Loading from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/css/index.css';
-import { insertIncome, updateIncome } from '@/hooks/crud_incomes';
+import { insertIncome, updateIncome, showIncome } from '@/hooks/crud_incomes';
 
 const store = useStore();
 const emit = defineEmits(['submit']);
-const props = defineProps(['idExpense', 'typeExpenses']);
+const props = defineProps(['id_income', 'typeExpenses']);
 
 const income_date = defineModel('income_date');
 const amount = defineModel('amount');
 const source = defineModel('source');
 
-const idExpense = ref(0);
+const id_income = ref(0);
 const statusMemuat = ref(false);
 const loadingPost = ref(false);
 const typeExpenses = ref(props.typeExpenses);
 
-watch(() => props.idExpense, (newValue) => {
-    idExpense.value = newValue;
-    if (idExpense.value == 0) {
+watch(() => props.id_income, (newValue) => {
+    id_income.value = newValue;
+    if (id_income.value == 0) {
         income_date.value = '';
         amount.value = '';
         source.value = '';
     } else {
         // LOAD DATA EDIT (EXISTING)
-        loadExistingData(idExpense.value);
+        loadExistingData(id_income.value);
     }
 });
 
@@ -96,7 +95,7 @@ watch(() => props.typeExpenses, (newValue) => {
 async function loadExistingData(id) {
     statusMemuat.value = true;
     try {
-        const result = await showExpense(store.getters.getToken, id);
+        const result = await showIncome(store.getters.getToken, id);
 
         if (result.success !== true) {
             throw new Error(result.message);
@@ -114,8 +113,8 @@ async function loadExistingData(id) {
             id_tipe_expense: result.data.id_tipe_expense,
             tipe_expense: result.data.tipe_expense,
         }
-        store.dispatch('editExpense', {
-            'id': idExpense.value,
+        store.dispatch('editIncome', {
+            'id': id_income.value,
             'data': newData,
         });
 
@@ -144,15 +143,15 @@ async function submitForm() {
         }
 
         // Action on submit
-        if (idExpense.value) {
+        if (id_income.value) {
             // Edit Expanse
-            const result = await updateIncome(store.getters.getToken, idExpense.value, dataPost);
+            const result = await updateIncome(store.getters.getToken, id_income.value, dataPost);
             if (result.success !== true) {
                 throw new Error('Edit data gagal.')
             }
-            dataPost.id = idExpense.value;
-            store.dispatch('editExpense', {
-                'id': idExpense.value,
+            dataPost.id = id_income.value;
+            store.dispatch('editIncome', {
+                'id': id_income.value,
                 'data': dataPost,
             });
         } else {
@@ -165,14 +164,14 @@ async function submitForm() {
                 throw new Error('Tambah data gagal');
             }
             dataPost.id = result.data.id;
-            store.dispatch('addExpense', dataPost);
+            store.dispatch('addIncome', dataPost);
         }
 
         // Reset data when submit success
         income_date.value = '';
         amount.value = '';
         source.value = '';
-        idExpense.value = 0;
+        id_income.value = 0;
 
         // CLOSE modal
         loadingPost.value = false;

@@ -54,13 +54,13 @@ export async function insertIncome(token, data) {
 /**
  * Update Income by Id
  * @param {*} token 
- * @param {*} idExpense 
+ * @param {*} id_income 
  * @param {*} data 
  * @returns 
  */
-export async function updateIncome(token, idExpense, data) {
+export async function updateIncome(token, id_income, data) {
     // Edit Expanse
-    const url = `http://expensio-backend.local/api/income/${idExpense}`;
+    const url = `http://expensio-backend.local/api/income/${id_income}`;
     const response = await fetch(url, {
         method: 'PUT',
         headers: {
@@ -78,11 +78,11 @@ export async function updateIncome(token, idExpense, data) {
 /**
  * Delete Income by Id
  * @param {string} token 
- * @param {number} idExpense 
+ * @param {number} id_income 
  * @returns 
  */
-export async function deleteIncome(token, idExpense) {
-    const url = `http://expensio-backend.local/api/income/${idExpense}`;
+export async function deleteIncome(token, id_income) {
+    const url = `http://expensio-backend.local/api/income/${id_income}`;
     const response = await fetch(url, {
         method: 'DELETE',
         headers: {
@@ -99,11 +99,11 @@ export async function deleteIncome(token, idExpense) {
 /**
  * Show Income by Id
  * @param {string} token 
- * @param {number} idExpense 
+ * @param {number} id_income 
  * @returns 
  */
-export async function showExpense(token, idExpense) {
-    const url = 'http://expensio-backend.local/api/income/' + idExpense;
+export async function showIncome(token, id_income) {
+    const url = 'http://expensio-backend.local/api/income/' + id_income;
     const response = await fetch(url, {
         method: 'GET',
         headers: {

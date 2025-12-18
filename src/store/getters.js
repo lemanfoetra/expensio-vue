@@ -3,6 +3,9 @@ export default {
         return !!state.token;
     },
 
+    //
+    // EXPENSE GETTERS
+    //
     expenses(state) {
         return state.expense;
     },
@@ -30,5 +33,19 @@ export default {
 
     getTypeExpenses(state) {
         return state.typeExpenses;
-    }
+    },
+
+
+    //
+    // INCOME GETTERS
+    //
+    incomes(state) {
+        return state.incomes;
+    },
+
+    incomesById: (state) => (id) => {
+        const incomes = state.incomes;
+        const index = incomes.findIndex(income => income.id === id);
+        return incomes[index];
+    },
 }

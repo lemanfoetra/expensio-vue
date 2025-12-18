@@ -11,15 +11,11 @@
                     </div>
                     <div class="expense_item_column" @click="clickToDetail">
                         <div class="content">
-                            <div class="tanggal">{{ vdate }}</div>
-                            <div class="nominal">Rp {{ vnominal }}</div>
-                            <div class="keterangan">{{ vketerangan }}</div>
+                            <div class="tanggal">{{ source }}</div>
+                            <div class="nominal">Rp {{ amount }}</div>
+                            <div class="keterangan">{{ income_date }}</div>
                         </div>
                         <div class="expense_tipe">
-                            <span v-if="id_tipe_expense === 1" class="badge badge-outline text-green">{{ tipe_expense }}</span>
-                            <span v-else-if="id_tipe_expense === 2" class="badge badge-outline text-red">{{ tipe_expense }}</span>
-                            <span v-else-if="id_tipe_expense === 3" class="badge badge-outline text-yellow">{{ tipe_expense }}</span>
-                            <span v-else class="badge badge-outline text-blue">{{ tipe_expense }}</span>
                         </div>
                     </div>
                 </div>
@@ -32,14 +28,13 @@
 import { ref, watch, defineProps, defineEmits, defineModel } from 'vue';
 
 
-const props = defineProps(['showOption', 'id', 'tanggal', 'nominal', 'keterangan', 'tipe_expense', 'id_tipe_expense']);
+const props = defineProps(['showOption', 'id', 'source', 'income_date', 'amount']);
 const emit = defineEmits(['clickDetail', 'onCheckboxClick']);
 
 let statusOpenOption = ref(props.showOption);
-const idExpense = ref(props.id);
-const vdate = ref(formatTanggal(props.tanggal))
-const vnominal = ref(formatCurrency(props.nominal))
-const vketerangan = ref(props.keterangan)
+const id_income = ref(props.id);
+const income_date = ref(formatTanggal(props.income_date))
+const amount = ref(formatCurrency(props.amount))
 const isChecked = defineModel('isChecked');
 
 watch(() => props.showOption, (newValue) => {
@@ -49,7 +44,7 @@ watch(() => props.showOption, (newValue) => {
 watch(() => isChecked.value, (newValue) => {
     emit('onCheckboxClick', {
         status: newValue,
-        id: idExpense.value,
+        id: id_income.value,
     });
 });
 

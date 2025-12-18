@@ -1,4 +1,8 @@
 export default {
+
+    //
+    // EXPENSE MUTATIONS
+    //
     addExpenseAsFirst(state, payload) {
         state.expense.unshift(payload);
     },
@@ -26,7 +30,16 @@ export default {
     deleteAllExpense(state) {
         state.expense = [];
     },
+    typeExpenseReset(state) {
+        state.typeExpenses = [];
+    },
+    typeExpensesAdd(state, payload) {
+        state.typeExpenses.push(payload);
+    },
 
+    //
+    // AUTH MUTATIONS
+    //
     setUser(state, payload) {
         state.user = payload;
     },
@@ -39,10 +52,35 @@ export default {
         state.user = null;
     },
 
-    typeExpenseReset(state) {
-        state.typeExpenses = [];
+
+    //
+    // INCOME MUTATIONS
+    //
+    addIncomeAsFirst(state, payload) {
+        state.incomes.unshift(payload);
     },
-    typeExpensesAdd(state, payload) {
-        state.typeExpenses.push(payload);
+    addIncomeAsLast(state, payload) {
+        state.incomes.push(payload);
+    },
+    editIncome(state, payload) {
+        const id = payload.id;
+        const data = payload.data;
+
+        const incomes = state.incomes;
+        const index = incomes.findIndex(inc => inc.id === id);
+        state.incomes[index] = data;
+    },
+    deleteIncome(state, payload) {
+        const idList = payload;
+        const income = state.incomes;
+        if (idList.length > 0) {
+            idList.forEach(id => {
+                const index = income.findIndex(income => income.id === id);
+                state.incomes.splice(index, 1);
+            });
+        }
+    },
+    deleteAllIncome(state) {
+        state.incomes = [];
     },
 }

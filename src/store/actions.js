@@ -1,4 +1,7 @@
 export default {
+    //
+    // EXPENSE ACTIONS
+    //  
     addExpense(context, data) {
         data.key = Math.floor(Math.random() * 100000);
         context.commit('addExpenseAsFirst', data);
@@ -38,5 +41,28 @@ export default {
     typeExpensesAdd(context, data) {
         data.key = Math.floor(Math.random() * 100000);
         context.commit('typeExpensesAdd', data);
+    },
+
+
+    // 
+    // INCOME ACTIONS
+    // 
+    addIncome(context, data) {
+        data.key = Math.floor(Math.random() * 100000);
+        context.commit('addIncomeAsFirst', data);
+    },
+    addIncomeLast(context, data) {
+        data.key = Math.floor(Math.random() * 100000);
+        context.commit('addIncomeAsLast', data);
+    },
+    editIncome(context, data) {
+        data.data.key = Math.floor(Math.random() * 100000);
+        context.commit('editIncome', data);
+    },
+    deleteIncome(context, idList) {
+        context.commit('deleteIncome', idList);
+    },
+    deleteAllIncome(context) {
+        context.commit('deleteAllIncome');
     },
 }
