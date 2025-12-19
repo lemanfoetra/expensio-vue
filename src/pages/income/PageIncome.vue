@@ -162,7 +162,7 @@
 <script setup>
 import { ref, computed, onMounted, defineModel, watch } from 'vue';
 import { useStore } from 'vuex'
-import { getStartAndEndOfWeek } from '../../hooks/helpers';
+import { getFirstAndLastDayOfMonth } from '../../hooks/helpers';
 
 // component
 import ListIncome from './ListIncome.vue';
@@ -218,10 +218,9 @@ watch([filterDateFirst, filterDateLast], async (newValue) => {
 
 onMounted(async () => {
     // Default day filter
-    const today = new Date();
-    const result = getStartAndEndOfWeek(today)
-    filterDateFirst.value = result.startOfWeek;
-    filterDateLast.value = result.endOfWeek;
+    const result = getFirstAndLastDayOfMonth();
+    filterDateFirst.value = result.firstDay;
+    filterDateLast.value = result.lastDay;
 })
 
 /**
@@ -264,7 +263,6 @@ function changeOption() {
         listIdIncome.value = [];
     }
 }
-
 
 function addForm() {
     id_income.value = 0;
