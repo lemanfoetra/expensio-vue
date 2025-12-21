@@ -7,38 +7,8 @@
                     <div class="row g-2 align-items-center">
                         <div class="col">
                             <h2 class="page-title">
-                                Pemasukan
+                                Budget
                             </h2>
-                        </div>
-                        <!-- Page title actions -->
-                        <div class="col-auto ms-auto d-print-none">
-                            <div class="btn-list">
-                                <button type="button" style="display: none;" id="buton_open_modal"
-                                    data-bs-toggle="modal" data-bs-target="#modal-simple"></button>
-                                <button @click="addForm" type="button" class="btn btn-primary d-none d-sm-inline-block"
-                                    data-bs-toggle="modal" data-bs-target="#modal-simple" :disabled="loadingFormData">
-                                    <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round" class="icon">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                        <path d="M12 5l0 14" />
-                                        <path d="M5 12l14 0" />
-                                    </svg>
-                                    Tambah Pemasukan
-                                </button>
-                                <button @click="addForm" type="button" class="btn btn-primary d-sm-none btn-icon"
-                                    data-bs-toggle="modal" data-bs-target="#modal-simple" :disabled="loadingFormData">
-                                    <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round" class="icon">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                        <path d="M12 5l0 14" />
-                                        <path d="M5 12l14 0" />
-                                    </svg>
-                                </button>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -58,22 +28,6 @@
                                             style="margin-top: 6px; margin-bottom: 6px; border: 1px solid #0054a6"
                                             :disabled="showButtonDelete">
                                     </div>
-
-                                    <div v-if="!showButtonDelete" class="box-filter-date">
-                                        Filter
-                                        <date-filter v-model="filterDateFirst"></date-filter>
-                                        <svg style="margin-bottom: 7px" xmlns="http://www.w3.org/2000/svg" width="24"
-                                            height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                            class="icon icon-tabler icons-tabler-outline icon-tabler-arrow-narrow-right">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                            <path d="M5 12l14 0" />
-                                            <path d="M15 16l4 -4" />
-                                            <path d="M15 8l4 4" />
-                                        </svg>
-                                        <date-filter v-model="filterDateLast"></date-filter>
-                                    </div>
-
                                     <div v-if="showButtonDelete" class="box-action-hapus">
                                         <button @click="deleteMultipleIncomes" type="button"
                                             class="action-button-delete btn-sm" :disabled="loadingDetele">
@@ -108,11 +62,11 @@
                                             </span>
                                         </button>
                                     </div>
-
                                 </div>
                             </div>
                         </div>
                     </div>
+
                     <div v-if="loadingIncomes" class="col-md-12">
                         <div class="card mt-2">
                             <div style="padding: 10px; text-align: center;">
@@ -134,18 +88,29 @@
                             </div>
                         </div>
                     </div>
-                    <div v-else-if="!loadingIncomes && incomes.length == 0">
-                        <div class="card mt-2">
+
+                    <div v-else-if="!loadingIncomes && budgets.length == 0">
+                        <div class="card mt-2 col-md-12">
                             <div style="padding: 10px; text-align: center;">
                                 Tidak ada data
                             </div>
                         </div>
                     </div>
                     <div v-else>
-                        <list-income v-for="income in incomes" :key="income.key" :id="income.id" :source="income.source"
-                            :income_date="income.income_date" :amount="income.amount" @click-detail="editForm"
+                        <ListBudget v-for="budget in budgets" :key="budget.id_tipe" :id_tipe="budget.id_tipe"
+                            :tipe="budget.tipe" :budget="budget.budget" :sisa="budget.sisa"
+                            :total_expense="budget.total_expense" @on-click-list="onListClick"
                             @on-checkbox-click="onCheckboxClick" :show-option="showOption">
-                        </list-income>
+                        </ListBudget>
+                    </div>
+
+                     <div class="col-md-12 mt-3">
+                        <button type="button" @click="onButtonAddClick" style="width: 100%;"
+                            class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modal-simple">Tambah
+                            Tipe Budget</button>
+                        <button type="button" style="display: none;" id="buton_open_modal"
+                            class="btn btn-outline-primary" data-bs-toggle="modal"
+                            data-bs-target="#modal-simple"></button>
                     </div>
                 </div>
             </div>
@@ -154,100 +119,73 @@
 
     <div class="modal modal-blur fade" id="modal-simple" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
-            <form-income @submit="onSubmited" :id_income="id_income" :type-incomes="typeExpenses"></form-income>
+            <form-budget @submit="onSumbitForm"></form-budget>
         </div>
     </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, defineModel, watch } from 'vue';
+import { ref, computed, onMounted, defineModel } from 'vue';
 import { useStore } from 'vuex'
-import { getStartAndEndOfWeek } from '../../hooks/helpers';
 
 // component
-import ListIncome from './ListIncome.vue';
-import DateFilter from './DateFilter.vue';
-import { deleteIncome, loadIncome } from '@/hooks/crud_incomes';
-import FormIncome from './FormIncome.vue';
+import ListBudget from './ListBudget.vue';
+import { api_budget_delete, api_budget_list } from '@/hooks/api_budget';
+import FormBudget from './FormBudget.vue';
 
 // const router = useRouter();
 const store = useStore();
-let id_income = ref(0);
 let loadingIncomes = ref(false);
 let loadingDetele = ref(false);
-const loadingFormData = ref(false);
-let listIdIncome = ref([]);
-const typeExpenses = ref([]);
+let listIdBudget = ref([]);
 const checkShowOption = defineModel('showOption');
-const filterDateFirst = ref('');
-const filterDateLast = ref('');
-
-
-const incomes = computed(function () {
-    const datas = store.getters.incomes;
-    return datas;
-});
-
+const budgets = ref([]);
 
 const showButtonDelete = computed(function () {
-    if (listIdIncome.value.length > 0) {
+    if (listIdBudget.value.length > 0) {
         return true;
     }
     return false;
 });
 
 /**
- * Show checklist di list income ketika cheklist option di klik
+ * Show checklist di list budget ketika cheklist option di klik
  */
 const showOption = computed(function () {
     return checkShowOption.value;
 });
 
-/**
- * Load income ketika filter tanggal berubah dan ketika halaman pertama kali dimuat
- */
-watch([filterDateFirst, filterDateLast], async (newValue) => {
-    await loadIncomeFromServer(
-        {
-            'firstDay': newValue[0],
-            'lastDay': newValue[1],
-        }
-    );
-});
 
 
 onMounted(async () => {
-    // Default day filter
-    const today = new Date();
-    const result = getStartAndEndOfWeek(today)
-    filterDateFirst.value = result.startOfWeek;
-    filterDateLast.value = result.endOfWeek;
+    await loadBudgetList();
 })
 
 /**
- * Load income dari server
+ * Load budget dari server
  */
-async function loadIncomeFromServer(params) {
+async function loadBudgetList() {
     loadingIncomes.value = true;
     try {
         const token = store.getters.getToken;
-        const result = await loadIncome(token, params);
+        const result = await api_budget_list(token);
+
+        budgets.value = [];
+        for (let index = 0; index < result.data.length; index++) {
+            const data = result.data[index];
+            budgets.value.push({
+                key: data.tipe_expense_id,
+                id_tipe: data.tipe_expense_id,
+                tipe: data.tipe,
+                budget: data.budget,
+                total_expense: data.total_expense,
+                sisa: data.sisa,
+            });
+        }
 
         if (!result.success === true) {
             throw new Error("Gagal memuat data.");
         }
-        store.dispatch('deleteAllIncome');
-        result.data.forEach(income => {
-            store.dispatch('addIncomeLast', {
-                id: income.id,
-                id_users: income.id_users,
-                income_date: income.income_date,
-                source: income.source,
-                amount: income.amount,
-                created_at: income.created_at,
-                updated_at: income.updated_at,
-            });
-        });
         loadingIncomes.value = false;
     } catch (error) {
         loadingIncomes.value = false;
@@ -260,20 +198,11 @@ async function loadIncomeFromServer(params) {
  * Checklist opsi
  */
 function changeOption() {
-    if (checkShowOption.value && listIdIncome.value > 0) {
-        listIdIncome.value = [];
+    if (checkShowOption.value && listIdBudget.value > 0) {
+        listIdBudget.value = [];
     }
 }
 
-
-function addForm() {
-    id_income.value = 0;
-}
-
-function editForm(data) {
-    id_income.value = data;
-    document.getElementById('buton_open_modal').click();
-}
 
 async function deleteMultipleIncomes() {
     if (!confirm('Anda yakin hapus?')) {
@@ -281,38 +210,50 @@ async function deleteMultipleIncomes() {
     }
     loadingDetele.value = true;
     try {
-        if (listIdIncome.value.length > 0) {
-            for await (const id of listIdIncome.value) {
-                const result = await deleteIncome(store.getters.getToken, id);
+        if (listIdBudget.value.length > 0) {
+            for await (const id of listIdBudget.value) {
+                const result = await api_budget_delete(store.getters.getToken, id);
                 // const result = await response.json();
                 if (result.success !== true) {
                     throw new Error('Hapus data gagal.')
                 }
             }
-
-            store.dispatch('deleteIncome', listIdIncome.value);
-            listIdIncome.value = [];
+            listIdBudget.value = [];
         }
         loadingDetele.value = false;
+        await loadBudgetList();
     } catch (error) {
         loadingDetele.value = false;
         alert(error.message);
     }
 }
 
-function onSubmited() {
-    id_income.value = 0;
-}
 
 function onCheckboxClick(value) {
     if (value.status) {
-        listIdIncome.value.push(value.id);
+        listIdBudget.value.push(value.id);
     } else {
-        const index = listIdIncome.value.findIndex(ex => ex === value.id);
+        const index = listIdBudget.value.findIndex(ex => ex === value.id);
         if (index > -1) {
-            listIdIncome.value.splice(index, 1);
+            listIdBudget.value.splice(index, 1);
         }
     }
+}
+
+
+function onButtonAddClick() {
+    store.dispatch('setBudgetIdState', 0);
+}
+
+
+function onListClick(id_tipe) {
+    store.dispatch('setBudgetIdState', id_tipe);
+    document.getElementById('buton_open_modal').click();
+}
+
+async function onSumbitForm() {
+    await loadBudgetList();
+    store.dispatch('setBudgetIdState', 0);
 }
 </script>
 

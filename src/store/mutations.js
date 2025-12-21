@@ -83,4 +83,12 @@ export default {
     deleteAllIncome(state) {
         state.incomes = [];
     },
+
+
+    //
+    // BUDGET MUTATIONS
+    //
+    setBudgetIdState(state, payload) {
+        state.budget_id_state = payload;
+    },
 }

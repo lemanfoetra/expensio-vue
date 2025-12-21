@@ -48,4 +48,11 @@ export default {
         const index = incomes.findIndex(income => income.id === id);
         return incomes[index];
     },
+
+    //
+    // BUDGET GETTERS
+    //
+    getBudgetIdState(state) {
+        return state.budget_id_state;
+    },
 }
