@@ -99,3 +99,20 @@ export async function detailPengeluaranBulanIni(token) {
     }
     return await response.json();
 }
+
+
+export async function api_dashbaord_overview(token) {
+    const url = 'https://xpayapi.texva.id/api/dashboard/overview';
+    const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+    });
+    if (!response.ok) {
+        throw new Error("Gagal memuat data.");
+    }
+    return await response.json();
+}
