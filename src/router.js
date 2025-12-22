@@ -7,6 +7,7 @@ import PageExpense from './pages/expense/PageExpense.vue'
 import PageHome from './pages/home/PageHome.vue'
 import PagePlanning from './pages/planning/PagePlanning.vue'
 import PageIncome from './pages/income/PageIncome.vue'
+import PageBudget from './pages/budget/PageBudget.vue'
 
 const routes = [
     {
@@ -55,6 +56,17 @@ const routes = [
             {
                 path: '',
                 component: PageExpense,
+            },
+        ],
+    },
+    {
+        path: '/budget',
+        meta: { requireAuth: true },
+        component: HeaderNav,
+        children: [
+            {
+                path: '',
+                component: PageBudget,
             },
         ],
     },

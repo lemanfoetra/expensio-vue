@@ -11,6 +11,7 @@ const store = createStore({
             user: '',
             typeExpenses: [],
             incomes: [],
+            budget_id_state: 0,
         }
     },
     mutations: mutations,

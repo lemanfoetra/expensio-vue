@@ -65,4 +65,12 @@ export default {
     deleteAllIncome(context) {
         context.commit('deleteAllIncome');
     },
+
+
+    //
+    // BUDGET ACTIONS
+    //
+    setBudgetIdState(context, id_tipe) {
+        context.commit('setBudgetIdState', id_tipe);
+    },
 }
