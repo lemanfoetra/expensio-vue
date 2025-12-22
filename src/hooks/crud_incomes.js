@@ -11,7 +11,7 @@ export async function loadIncome(token, params = {}) {
         firstDay = params.firstDay;
         lastDay = params.lastDay;
     }
-    const url = `http://expensio-backend.local/api/income?limit=100&firstday=${firstDay}&lastday=${lastDay}`;
+    const url = `http://127.0.0.1:8000/api/income?limit=100&firstday=${firstDay}&lastday=${lastDay}`;
     const response = await fetch(url, {
         method: 'GET',
         headers: {
@@ -35,7 +35,7 @@ export async function loadIncome(token, params = {}) {
  */
 export async function insertIncome(token, data) {
     // Add Expanse
-    const url = 'http://expensio-backend.local/api/income';
+    const url = 'http://127.0.0.1:8000/api/income';
     const response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -60,7 +60,7 @@ export async function insertIncome(token, data) {
  */
 export async function updateIncome(token, id_income, data) {
     // Edit Expanse
-    const url = `http://expensio-backend.local/api/income/${id_income}`;
+    const url = `http://127.0.0.1:8000/api/income/${id_income}`;
     const response = await fetch(url, {
         method: 'PUT',
         headers: {
@@ -82,7 +82,7 @@ export async function updateIncome(token, id_income, data) {
  * @returns 
  */
 export async function deleteIncome(token, id_income) {
-    const url = `http://expensio-backend.local/api/income/${id_income}`;
+    const url = `http://127.0.0.1:8000/api/income/${id_income}`;
     const response = await fetch(url, {
         method: 'DELETE',
         headers: {
@@ -103,7 +103,7 @@ export async function deleteIncome(token, id_income) {
  * @returns 
  */
 export async function showIncome(token, id_income) {
-    const url = 'http://expensio-backend.local/api/income/' + id_income;
+    const url = 'http://127.0.0.1:8000/api/income/' + id_income;
     const response = await fetch(url, {
         method: 'GET',
         headers: {
