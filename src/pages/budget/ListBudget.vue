@@ -30,7 +30,7 @@
                             </div>
                             <div class="mt-2">
                                 <div v-if="progress < 100" class="progress" style=" height: 18px;">
-                                    <div class="progress-bar bg-success" role="progressbar" :style="`width: ${progress}%`" aria-valuenow="25"
+                                    <div class="progress-bar" role="progressbar" :style="`width: ${progress}%`" aria-valuenow="25"
                                         aria-valuemin="0" aria-valuemax="100">{{ progress }} %</div>
                                 </div>
                                 <div v-else class="progress" style=" height: 18px;">
