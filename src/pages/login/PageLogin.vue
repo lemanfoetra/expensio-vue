@@ -113,7 +113,7 @@ async function sumbitLogin() {
             throw new Error("Mohon isi semua inputan.");
         }
 
-        const url = 'http://expensio-backend.local/api/login';
+        const url = 'http://127.0.0.1:8000/api/login';
         const data = {
             email: email.value,
             password: password.value
