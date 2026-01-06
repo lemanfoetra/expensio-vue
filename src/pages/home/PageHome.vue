@@ -152,7 +152,7 @@
                                             <div class="font-weight-medium">
                                                 <span v-if="!loadingOverview">Rp {{
                                                     formatCurrency(overview.total_budget - overview.total_pengeluaran)
-                                                }}</span>
+                                                    }}</span>
                                                 <span v-else>
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -233,12 +233,15 @@
 
                         <div class="col-md-12 mb-2 mt-2">
                             <div class="card">
+                                <div class="card-header">
+                                    <h4 class="card-title">Daily Expenses</h4>
+                                </div>
                                 <div class="card-body">
                                     <div id="cal-heatmap"
                                         style="width: 100%; overflow-y: auto; display: flex; justify-content: center;">
                                     </div>
 
-                                    <div class="accordion-item">
+                                    <div class="accordion-item mt-2">
                                         <div class="accordion-header">
                                             <button class="accordion-button collapsed" type="button"
                                                 data-bs-toggle="collapse" data-bs-target="#collapse-4-tabs"
@@ -268,7 +271,7 @@
                         <div class="col-md-12 mb-2 mt-2">
                             <div class="card">
                                 <div class="card-header">
-                                    <h4 class="card-title">Budget Distribution</h4>
+                                    <h4 class="card-title">Income Distribution</h4>
                                 </div>
                                 <div class="card-body">
                                     <div id="budget-distribution-chart" style="height: 300px"></div>
