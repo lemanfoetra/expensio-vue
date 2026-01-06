@@ -2,7 +2,7 @@
     <div class="page page-center">
         <div class="container container-tight py-4">
             <div class="text-center mb-4">
-                <h2>XPay</h2>
+                <h2>HMCS</h2>
                 <h4>By Texva.id</h4>
             </div>
 

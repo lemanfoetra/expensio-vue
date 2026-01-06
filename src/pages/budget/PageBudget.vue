@@ -158,6 +158,7 @@ const showOption = computed(function () {
 
 
 onMounted(async () => {
+    document.title = "Atur Budget";
     await loadBudgetList();
 })
 

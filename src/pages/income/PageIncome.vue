@@ -218,6 +218,7 @@ watch([filterDateFirst, filterDateLast], async (newValue) => {
 
 onMounted(async () => {
     // Default day filter
+    document.title = "Pemasukan";
     const result = getFirstAndLastDayOfMonth()
     filterDateFirst.value = result.firstDay;
     filterDateLast.value = result.lastDay;

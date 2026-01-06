@@ -7,7 +7,7 @@
                 </button>
                 <h1 class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
                     <div>
-                        <span>XPay</span>
+                        <span>HMCS</span>
                         <div style="font-size: 12px; color: gray; margin-top: 5px;">
                             Improve your spending
                         </div>

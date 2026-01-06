@@ -1,5 +1,6 @@
 <template>
     <div>
+        <title>Dashboard</title>
         <div class="page-wrapper">
             <!-- Page header -->
             <div class="page-header d-print-none">
@@ -150,7 +151,8 @@
                                         <div class="col">
                                             <div class="font-weight-medium">
                                                 <span v-if="!loadingOverview">Rp {{
-                                                    formatCurrency(overview.total_budget - overview.total_pengeluaran) }}</span>
+                                                    formatCurrency(overview.total_budget - overview.total_pengeluaran)
+                                                }}</span>
                                                 <span v-else>
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -225,6 +227,51 @@
                                             </div>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12 mb-2 mt-2">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div id="cal-heatmap"
+                                        style="width: 100%; overflow-y: auto; display: flex; justify-content: center;">
+                                    </div>
+
+                                    <div class="accordion-item">
+                                        <div class="accordion-header">
+                                            <button class="accordion-button collapsed" type="button"
+                                                data-bs-toggle="collapse" data-bs-target="#collapse-4-tabs"
+                                                aria-expanded="false">
+                                                Show legend
+                                                <div class="accordion-button-toggle">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                        class="icon icon-1">
+                                                        <path d="M6 9l6 6l6 -6"></path>
+                                                    </svg>
+                                                </div>
+                                            </button>
+                                        </div>
+                                        <div id="collapse-4-tabs" class="accordion-collapse collapse"
+                                            data-bs-parent="#accordion-tabs" style="">
+                                            <div class="accordion-body">
+                                                <div id="legend-graph"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12 mb-2 mt-2">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="card-title">Budget Distribution</h4>
+                                </div>
+                                <div class="card-body">
+                                    <div id="budget-distribution-chart" style="height: 300px"></div>
                                 </div>
                             </div>
                         </div>
@@ -538,6 +585,28 @@
             </div>
         </div>
     </div>
+
+
+    <!-- Button trigger modal -->
+    <button type="button" id="btnmodalDetailGraphBox" class="btn btn-primary" data-bs-toggle="modal"
+        data-bs-target="#modalDetailGraphBox" style="display: none;"></button>
+    <div class="modal fade" id="modalDetailGraphBox" tabindex="-1" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detail</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="isimodalDetailGraphBox">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 
 
@@ -551,8 +620,14 @@ import {
     detailPengeluaranHariIni,
     detailPengeluaranMingguIni,
     detailPengeluaranBulanIni,
-    api_dashbaord_overview
+    api_dashbaord_overview,
+    api_dashbaord_expenses_list,
+    api_dashbaord_budget_distribution
 } from '../../hooks/dashboard_api';
+import CalHeatmap from 'cal-heatmap';
+import Legend from 'cal-heatmap/plugins/Legend';
+import { formatTanggal, formatYYYYMMDD, timestampToYYYYMMDD, useScreen } from '@/hooks/helpers';
+import * as echarts from 'echarts';
 
 
 const store = useStore();
@@ -576,6 +651,8 @@ const dataDetailPengBulanIni = ref([]);
 
 const filter = ref('overview');
 
+const { width } = useScreen();
+
 // OVERVIEW PAGE
 const loadingOverview = ref(false);
 const overview = ref({
@@ -589,6 +666,9 @@ const overview = ref({
 watch(filter, async (newVal) => {
     if (newVal === 'overview') {
         await loadOverview();
+        await loadGrafikHeatmap();
+        await loadBudgetDistributionChart();
+
     } else if (newVal == 'pengeluaran') {
         await loadPengeluaranHariIni();
         await loadPengeluaranMingguIni();
@@ -602,7 +682,11 @@ watch(filter, async (newVal) => {
 
 onMounted(async () => {
     try {
+        document.title = "Dashboard";
+
         await loadOverview();
+        await loadGrafikHeatmap();
+        await loadBudgetDistributionChart();
     } catch (error) {
         alert(error.message);
     }
@@ -725,7 +809,6 @@ async function loadDetailPengeluaranBulanIni() {
         loadingJumlahBulanIni.value = false;
     } catch (error) {
         loadingJumlahBulanIni.value = false;
-        console.log(error);
     }
 }
 
@@ -747,28 +830,144 @@ async function loadOverview() {
 }
 
 
-function formatCurrency(nilai) {
-    const formatter = new Intl.NumberFormat('id-ID');
-    return formatter.format(nilai);
+async function loadGrafikHeatmap() {
+    try {
+        const min_date = getFirstDateByRange(getRange());
+
+        const token = store.getters.getToken;
+        const result = await api_dashbaord_expenses_list(token, formatYYYYMMDD(min_date));
+        if (result.success !== true) {
+            throw new Error(result.message);
+        }
+        const dataExpense = result.data;
+
+        // delete inserted html
+        document.getElementById('cal-heatmap').innerHTML = '';
+
+        const cal = new CalHeatmap()
+        cal.paint(
+            {
+                itemSelector: '#cal-heatmap',
+                domain: {
+                    type: 'month',
+                    gutter: 24,
+                }, // gap between months (px)
+                subDomain: {
+                    type: 'day',
+                    width: 25,
+                    height: 25,
+                    gutter: 4,
+                    label: null  // hilangkan teks di sel (opsional)
+                },
+                date: {
+                    // start: new Date(2020, 4, 15)
+                    start: min_date,
+                },
+                range: getRange(),
+                data: {
+                    // source: '/data/contributions.json', // ⬅️ LOCAL JSON
+                    source: dataExpense,
+                    type: 'json',
+                    x: 'date',
+                    y: 'count'
+                },
+                scale: {
+                    color: {
+                        domain: [0, 100000],
+                        type: 'linear',
+                    },
+                },
+            },
+            [
+                [
+                    Legend, {
+                        width: 300,
+                        itemSelector: '#legend-graph',
+                    }
+                ]
+            ]
+        )
+
+        cal.on('click', (_, timestamp, value) => {
+            const nominal = value > 0 ? value : 0;
+            const text = `Pengeluaran pada hari ${formatTanggal(timestampToYYYYMMDD(timestamp))} sebesar <b>Rp${formatCurrency(nominal)}</b>`;
+            document.getElementById('btnmodalDetailGraphBox').click();
+            document.getElementById('isimodalDetailGraphBox').innerHTML = text;
+        });
+
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 
-function formatTanggal(tanggalString) {
-    // Mengubah string menjadi objek Date
-    const tanggal = new Date(tanggalString);
+async function loadBudgetDistributionChart() {
+    try {
 
-    // Menentukan hari dalam bahasa Indonesia
-    const hari = tanggal.toLocaleDateString('id-ID', { weekday: 'long' });
+        const token = store.getters.getToken;
+        const result = await api_dashbaord_budget_distribution(token);
+        if (result.success !== true) {
+            throw new Error(result.message);
+        }
 
-    // Menentukan tanggal, bulan, dan tahun dalam bahasa Indonesia
-    const tanggalFormatted = tanggal.toLocaleDateString('id-ID', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric'
-    });
+        // https://echarts.apache.org/examples/en/editor.html?c=sankey-simple
+        document.getElementById('budget-distribution-chart').innerHTML = "Loading....";
 
-    // Menggabungkan hari dan tanggal yang sudah diformat
-    return `${hari}, ${tanggalFormatted}`;
+        var chartDom = document.getElementById('budget-distribution-chart');
+        if (echarts.getInstanceByDom(chartDom)) {
+            echarts.dispose(chartDom)
+        }
+
+        var myChart = echarts.init(chartDom);
+        var option;
+
+
+        option = {
+            series: {
+                type: 'sankey',
+                left: 0,
+                right: 0,
+                top: 0,
+                bottom: 10,
+
+                emphasis: {
+                    focus: 'adjacency'
+                },
+                data: result.data.data,
+                links: result.data.links,
+                label: {
+                    show: true,
+                    backgroundColor: '#fff',
+                    padding: [5, 5],
+                    borderRadius: 5,
+                    color: '#000',
+                    formatter: function (params) {
+                        let persentase = 0;
+                        if (result.data.pemasukan > 0) {
+                            persentase = (params.data.value * 100) / result.data.pemasukan;
+                        }
+
+                        if (params.data.name !== 'Pemasukan') {
+                            if (persentase > 10) {
+                                return params.data.name + ' (' + persentase.toFixed() + '%) \nRp' + params.data.value.toLocaleString('id-ID');
+                            }
+                            return params.data.name + ' (' + persentase.toFixed() + '%)';
+                        }
+                        return params.data.name + '\nRp' + params.data.value.toLocaleString('id-ID');
+                    }
+                }
+            }
+        };
+
+        option && myChart.setOption(option);
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+function formatCurrency(nilai) {
+    const formatter = new Intl.NumberFormat('id-ID');
+    return formatter.format(nilai);
 }
 
 
@@ -782,6 +981,34 @@ function formatTanggalTanpaNama(tanggalString) {
     return `${tanggalFormatted}`;
 }
 
+
+function getRange() {
+    if (width.value <= 400) {
+        return 2;
+    } else if (width.value > 400 && width.value < 600) {
+        return 3;
+    } else if (width.value > 600 && width.value < 750) {
+        return 4;
+    } else if (width.value > 750 && width.value < 800) {
+        return 5;
+    } else {
+        return 6;
+    }
+}
+
+
+function getFirstDateByRange(range) {
+    if (!Number.isInteger(range) || range < 1) {
+        throw new Error('Range harus bilangan bulat >= 1')
+    }
+
+    const date = new Date()
+    date.setMonth(date.getMonth() - (range - 1))
+    date.setDate(15)
+    date.setHours(0, 0, 0, 0)
+
+    return date;
+}
 </script>
 
 <style scoped>

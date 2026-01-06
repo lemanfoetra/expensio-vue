@@ -1,3 +1,5 @@
+import { onMounted, onUnmounted, ref } from "vue";
+
 export function getStartAndEndOfWeek(date) {
   // Buat salinan dari tanggal yang diberikan
   const current = new Date(date);
@@ -50,9 +52,50 @@ export function getFirstAndLastDayOfMonth() {
   };
 }
 
-function formatYYYYMMDD(date) {
+export function formatYYYYMMDD(date) {
   const y = date.getFullYear();
   const m = String(date.getMonth() + 1).padStart(2, "0");
   const d = String(date.getDate()).padStart(2, "0");
   return `${y}-${m}-${d}`;
+}
+
+export function useScreen() {
+  const width = ref(window.innerWidth);
+
+  const resize = () => {
+    width.value = window.innerWidth;
+  };
+
+  onMounted(() => window.addEventListener("resize", resize));
+  onUnmounted(() => window.removeEventListener("resize", resize));
+
+  return { width };
+}
+
+export function timestampToYYYYMMDD(timestamp) {
+  const d = new Date(timestamp);
+
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+}
+
+export function formatTanggal(tanggalString) {
+  // Mengubah string menjadi objek Date
+  const tanggal = new Date(tanggalString);
+
+  // Menentukan hari dalam bahasa Indonesia
+  const hari = tanggal.toLocaleDateString("id-ID", { weekday: "long" });
+
+  // Menentukan tanggal, bulan, dan tahun dalam bahasa Indonesia
+  const tanggalFormatted = tanggal.toLocaleDateString("id-ID", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+
+  // Menggabungkan hari dan tanggal yang sudah diformat
+  return `${hari}, ${tanggalFormatted}`;
 }

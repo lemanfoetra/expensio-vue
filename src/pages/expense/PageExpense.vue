@@ -225,6 +225,7 @@ watch([filterDateFirst, filterDateLast], async (newValue) => {
 onMounted(async () => {
 
     // Default day filter
+    document.title = "Pengeluaran";
     const today = new Date();
     const result = getStartAndEndOfWeek(today)
     filterDateFirst.value = result.startOfWeek;
