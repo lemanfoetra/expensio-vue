@@ -10,7 +10,7 @@
                     <Loading v-model:active="statusMemuat" :is-full-page="false" />
                 </div>
                 <div v-else>
-                     <div class="form-floating mb-3">
+                    <div class="form-floating mb-3">
                         <textarea class="form-control" id="tipe" v-model.trim="tipe" rows="10"></textarea>
                         <label for="tipe">Nama Tipe Budget</label>
                     </div>
@@ -106,8 +106,12 @@ async function submitForm() {
     try {
 
         // Validasi From
-        if ((budget.value || '') === '' || (tipe.value || '') === '') {
+        if ((tipe.value || '') === '') {
             throw new Error('Mohon isi semua bidang isian');
+        }
+
+        if (!budget.value) {
+            budget.value = 0;
         }
 
         // Initiate data

@@ -27,9 +27,9 @@
                             </div>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                            <!-- <a href="#" class="dropdown-item">Settings</a>
-                            <a href="#" class="dropdown-item">Profile</a>
-                            <div class="dropdown-divider"></div> -->
+                            <a href="#" class="dropdown-item">Settings</a>
+                            <!-- <a href="#" class="dropdown-item">Profile</a> -->
+                            <div class="dropdown-divider" style="margin: 3px 0px;"></div>
                             <button type="button" @click="logout" class="dropdown-item">Logout</button>
                         </div>
                     </div>

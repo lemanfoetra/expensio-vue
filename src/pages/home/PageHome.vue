@@ -240,7 +240,6 @@
                                     <div id="cal-heatmap"
                                         style="width: 100%; overflow-y: auto; display: flex; justify-content: center;">
                                     </div>
-
                                     <div class="accordion-item mt-2">
                                         <div class="accordion-header">
                                             <button class="accordion-button collapsed" type="button"
@@ -752,6 +751,7 @@ async function loadDetailPengeluaranHaiIni() {
         if (result.success !== true) {
             throw new Error(result.message);
         }
+        dataDetailPengHariIni.value = [];
         result.data.forEach(data => {
             dataDetailPengHariIni.value.unshift({
                 id: data.id,
@@ -776,6 +776,7 @@ async function loadDetailPengeluaranMingguIni() {
             throw new Error(result.message);
         }
         let index = 1;
+        dataDetailPengMingguIni.value = [];
         result.data.forEach(data => {
             dataDetailPengMingguIni.value.push({
                 id: index,
@@ -801,6 +802,7 @@ async function loadDetailPengeluaranBulanIni() {
             throw new Error(result.message);
         }
         let index = 1;
+        dataDetailPengBulanIni.value = [];
         result.data.forEach(data => {
             dataDetailPengBulanIni.value.push({
                 id: index,
@@ -851,6 +853,8 @@ async function loadGrafikHeatmap() {
         cal.paint(
             {
                 itemSelector: '#cal-heatmap',
+                theme: 'light',
+                locale: 'id',
                 domain: {
                     type: 'month',
                     gutter: 24,
@@ -865,6 +869,9 @@ async function loadGrafikHeatmap() {
                 date: {
                     // start: new Date(2020, 4, 15)
                     start: min_date,
+                    highlight: [
+                        new Date(), // Highlight today
+                    ],
                 },
                 range: getRange(),
                 data: {
@@ -887,7 +894,7 @@ async function loadGrafikHeatmap() {
                         width: 300,
                         itemSelector: '#legend-graph',
                     }
-                ]
+                ],
             ]
         )
 
@@ -967,6 +974,7 @@ async function loadBudgetDistributionChart() {
         console.error(error);
     }
 }
+
 
 function formatCurrency(nilai) {
     const formatter = new Intl.NumberFormat('id-ID');
